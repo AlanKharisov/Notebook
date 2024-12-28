@@ -225,54 +225,54 @@
             color: white;
         }
 
-            /* Адаптивные стили для мобильных устройств */
-            @media (max-width: 600px) {
-                .header {
-                    flex-direction: row;
-                    justify-content: space-between;
-                }
-
-                .header h1 {
-                    text-align: center;
-                    flex-grow: 1;
-                }
-
-                .header button {
-                    width: auto;
-                    text-align: center;
-                    padding: 10px;
-                }
-
-                .main {
-                    padding: 5px;
-                }
-
-                .category button {
-                    font-size: 14px;
-                    padding: 8px;
-                }
-
-                .add-dish-button {
-                    font-size: 14px;
-                    padding: 8px;
-                }
-
-                .edit-icon,
-                .delete-icon,
-                .edit-icon1 {
-                    width: 16px;
-                }
-
-                #registration-menu .registration-form {
-                    width: 95%;
-                }
-
-                /* Перемещение поля описания под полем ингредиента на мобильных устройствах */
-                #ingredient-description {
-                    display: block;
-                    margin-top: 10px;
-                }
+        /* Адаптивные стили для мобильных устройств */
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
             }
+
+            .header h1 {
+                text-align: center;
+                flex-grow: 1;
+            }
+
+            .header button {
+                width: auto;
+                text-align: center;
+                padding: 10px;
+            }
+
+            .main {
+                padding: 5px;
+            }
+
+            .category button {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .add-dish-button {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .edit-icon,
+            .delete-icon,
+            .edit-icon1 {
+                width: 16px;
+            }
+
+            #registration-menu .registration-form {
+                width: 95%;
+            }
+
+            /* Перемещение поля описания под полем ингредиента на мобильных устройствах */
+            #ingredient-description {
+                display: block;
+                margin-top: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -640,7 +640,6 @@
 
         let selectedIngredients = [];
 
-        // Добавление продукта в список популярных ингредиентов
         function addPopularIngredient(ingredient) {
             const ingredientTags = document.getElementById('ingredient-tags');
 
@@ -648,6 +647,8 @@
             const existingIngredient = Array.from(ingredientTags.children).find(
                 tag => tag.textContent.trim().toLowerCase() === ingredient.trim().toLowerCase()
             );
+
+            if (existingIngredient) return; // Если ингредиент уже существует, не добавляем его снова
 
             const ingredientElement = document.createElement('span');
             ingredientElement.textContent = ingredient;
@@ -662,7 +663,13 @@
             }
         }
 
-        // Переключение выбора ингредиента
+        document.addEventListener('DOMContentLoaded', () => {
+            const popularIngredients = getFromLocalStorage('popularIngredients', []);
+            popularIngredients.forEach(addPopularIngredient);
+            renderCategories();
+            toggleVisibility('main-menu');
+        });
+
         function toggleIngredientSelection(element, ingredient) {
             const index = selectedIngredients.indexOf(ingredient);
             if (index > -1) {
@@ -688,7 +695,6 @@
                 : '<p>Інгридієнти не обрані</p>';
         }
 
-        // Поиск рецептов по выбранным ингредиентам
         function searchRecipes() {
             const normalizedIngredients = selectedIngredients.map(normalizeIngredient);
 
@@ -715,7 +721,6 @@
                 ? results.map(recipe => `<div>${recipe.name}</div>`).join('')
                 : '<p>Рецепти не знайдені</p>';
         }
-
         // Поиск рецептов по ингредиенту
         function searchByIngredient(ingredient) {
             const normalizedIngredient = normalizeIngredient(ingredient);
@@ -731,9 +736,9 @@
             renderSearchResults(otherIngredientsResults, 'other-ingredients-list');
         }
 
-        // Функции работы с localStorage
         function getFromLocalStorage(key, defaultValue = []) {
-            return JSON.parse(localStorage.getItem(key)) || defaultValue;
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : defaultValue;
         }
 
         function saveToLocalStorage(key, value) {
