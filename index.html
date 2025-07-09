@@ -584,6 +584,10 @@
       }
 
       function logout() {
+        if (!confirm("Ви впевнені, що хочете вийти з акаунту?")) {
+          return;
+        }
+
         auth.signOut().then(() => {
           currentUser = null;
           categories = [];
@@ -951,15 +955,16 @@
         const newDescription = prompt("Опис:", ingredient.description || "");
 
         if (newName && newQuantity) {
+          const oldName = ingredient.name;
           recipe.ingredients[index] = {
             name: newName.trim(),
             quantity: newQuantity.trim(),
             description: newDescription ? newDescription.trim() : "",
           };
-
           saveRecipes();
           loadRecipeIngredients();
-          updatePopularIngredients(ingredient.name, newName.trim());
+          updatePopularIngredients(oldName, newName.trim());
+          cleanupPopularIngredient(oldName); // старое имя проверим
         }
       }
 
@@ -968,9 +973,10 @@
         if (!recipe || !recipe.ingredients[index]) return;
 
         if (confirm("Ви впевнені, що хочете видалити цей інгредієнт?")) {
-          recipe.ingredients.splice(index, 1);
+          const removed = recipe.ingredients.splice(index, 1)[0];
           saveRecipes();
           loadRecipeIngredients();
+          cleanupPopularIngredient(removed.name);
         }
       }
 
@@ -1033,6 +1039,29 @@
           popularIngredients[index] = newName;
           savePopularIngredients();
           renderPopularIngredients();
+        }
+      }
+
+      function cleanupPopularIngredient(ingredientName) {
+        const normalized = ingredientName.toLowerCase();
+
+        // проверить, встречается ли в каких‑то рецептах
+        const stillUsed = Object.values(recipes).some((recipe) => {
+          return recipe.ingredients?.some(
+            (i) => i.name.toLowerCase() === normalized
+          );
+        });
+
+        if (!stillUsed) {
+          const index = popularIngredients.findIndex(
+            (i) => i.toLowerCase() === normalized
+          );
+          if (index !== -1) {
+            popularIngredients.splice(index, 1);
+            savePopularIngredients();
+            renderPopularIngredients();
+            console.log(`Ингредиент "${ingredientName}" удалён из популярных.`);
+          }
         }
       }
 
