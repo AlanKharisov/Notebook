@@ -9,308 +9,404 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-      body {
-        font-family: "Roboto", sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
-        color: #333;
-        line-height: 1.6;
-      }
+  :root {
+    --primary-color: #4a6b57;
+    --primary-light: #6d8b74;
+    --secondary-color: #f7e1d7;
+    --accent-color: #d8b4a0;
+    --text-color: #333;
+    --light-text: #f8f9fa;
+    --background: #f8f5f2;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --radius: 12px;
+    --transition: all 0.3s ease;
+  }
 
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #4caf50;
-        padding: 15px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
 
-      .header h1 {
-        flex-grow: 1;
-        text-align: center;
-        margin: 0;
-        color: white;
-        font-size: 1.5rem;
-      }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--primary-color);
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-      .header button {
-        background: none;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        padding: 8px 12px;
-        color: white;
-        border-radius: 20px;
-        transition: background-color 0.3s;
-      }
+  .header h1 {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0;
+    color: var(--light-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
 
-      .header button:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-      }
+  .header button {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    color: var(--light-text);
+    border-radius: 20px;
+    transition: var(--transition);
+    font-weight: 500;
+    margin: 0 0.5rem;
+  }
 
-      .main {
-        padding: 15px;
-        max-width: 800px;
-        margin: 0 auto;
-      }
+  .header button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
 
-      .category {
-        margin-bottom: 15px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
+  .main {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-      .category-header {
-        display: flex;
-        align-items: center;
-        padding: 12px 15px;
-      }
+  h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
 
-      .category button {
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        text-align: left;
-        flex: 1;
-        padding: 0;
-        background: none;
-        font-weight: 500;
-      }
+  .category {
+    margin-bottom: 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: var(--transition);
+  }
 
-      .category-actions {
-        display: flex;
-        gap: 10px;
-      }
+  .category:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
 
-      .category-actions img {
-        width: 22px;
-        height: 22px;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 0.3s;
-      }
+  .category-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background-color: var(--primary-light);
+    color: var(--light-text);
+  }
 
-      .category-actions img:hover {
-        opacity: 1;
-      }
+  .category button {
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    text-align: left;
+    flex: 1;
+    padding: 0;
+    background: none;
+    font-weight: 500;
+    color: inherit;
+  }
 
-      .dishes {
-        display: none;
-        padding: 0 15px 15px;
-      }
+  .category-actions {
+    display: flex;
+    gap: 1rem;
+  }
 
-      .dish {
-        display: flex;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-      }
+  .category-actions img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.9;
+    transition: var(--transition);
+    filter: brightness(0) invert(1);
+  }
 
-      .dish:last-child {
-        border-bottom: none;
-      }
+  .category-actions img:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 
-      .dish button {
-        flex: 1;
-        border: none;
-        background: none;
-        text-align: left;
-        padding: 8px 0;
-        cursor: pointer;
-        font-size: 15px;
-      }
+  .dishes {
+    display: none;
+    padding: 0 1.5rem 1.5rem;
+    background-color: var(--card-bg);
+  }
 
-      .dish-actions {
-        display: flex;
-        gap: 10px;
-      }
+  .dish {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+  }
 
-      .dish-actions img {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 0.3s;
-      }
+  .dish:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
 
-      .dish-actions img:hover {
-        opacity: 1;
-      }
+  .dish:last-child {
+    border-bottom: none;
+  }
 
-      .button {
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 500;
-        display: inline-block;
-        text-align: center;
-        transition: background-color 0.3s;
-        width: 100%;
-        margin: 10px 0;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
+  .dish button {
+    flex: 1;
+    border: none;
+    background: none;
+    text-align: left;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: var(--transition);
+  }
 
-      .button:hover {
-        background-color: #45a049;
-      }
+  .dish button:hover {
+    color: var(--primary-color);
+    padding-left: 5px;
+  }
 
-      .button.secondary {
-        background-color: #f0f0f0;
-        color: #333;
-      }
+  .dish-actions {
+    display: flex;
+    gap: 1rem;
+  }
 
-      .button.secondary:hover {
-        background-color: #e0e0e0;
-      }
+  .dish-actions img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: var(--transition);
+  }
 
-      .input-group {
-        margin-bottom: 15px;
-      }
+  .dish-actions img:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 
-      .input-group input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ddd;
-        border-radius: 25px;
-        font-size: 16px;
-        box-sizing: border-box;
-        margin-bottom: 10px;
-      }
+  .button {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    transition: var(--transition);
+    width: 100%;
+    margin: 1rem 0;
+    box-shadow: var(--shadow);
+  }
 
-      .input-group input:focus {
-        outline: none;
-        border-color: #4caf50;
-      }
+  .button:hover {
+    background-color: var(--primary-light);
+    transform: translateY(-2px);
+  }
 
-      .recipe-content {
-        margin-top: 20px;
-        min-height: 300px;
-        padding: 15px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
+  .button.secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+  }
 
-      .recipe-content textarea {
-        width: 100%;
-        min-height: 300px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        font-size: 16px;
-        box-sizing: border-box;
-        resize: vertical;
-      }
+  .button.secondary:hover {
+    background-color: var(--accent-color);
+  }
 
-      .recipe-content textarea:focus {
-        outline: none;
-        border-color: #4caf50;
-      }
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
 
-      .auth-form {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
+  .input-group input {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    background-color: var(--card-bg);
+  }
 
-      .auth-form .form-container {
-        background-color: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        width: 90%;
-        max-width: 400px;
-      }
+  .input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 107, 87, 0.2);
+  }
 
-      .auth-form h3 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #333;
-      }
+  .recipe-content {
+    margin: 2rem 0;
+    min-height: 400px;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
 
-      .auth-form .error-message {
-        color: #e74c3c;
-        margin-bottom: 15px;
-        text-align: center;
-        font-size: 14px;
-      }
+  .recipe-content textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    box-sizing: border-box;
+    resize: vertical;
+    line-height: 1.6;
+    transition: var(--transition);
+    background-color: var(--card-bg);
+  }
 
-      .auth-form .switch-form {
-        background: none;
-        border: none;
-        color: #4caf50;
-        text-decoration: underline;
-        cursor: pointer;
-        font-size: 14px;
-        display: block;
-        margin: 0 auto;
-        text-align: center;
-        width: 100%;
-        padding: 10px 0;
-      }
+  .recipe-content textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 107, 87, 0.2);
+  }
 
-      @media (max-width: 480px) {
-        .header {
-          padding: 10px;
-        }
+  .auth-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+  }
 
-        .header h1 {
-          font-size: 1.2rem;
-        }
+  .auth-form .form-container {
+    background-color: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 400px;
+    animation: fadeInUp 0.4s ease-out;
+  }
 
-        .header button {
-          font-size: 14px;
-          padding: 6px 10px;
-        }
+  .auth-form h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+  }
 
-        .main {
-          padding: 10px;
-        }
+  .auth-form .error-message {
+    color: #e74c3c;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
 
-        .category-header {
-          padding: 10px;
-        }
+  .auth-form input {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    transition: var(--transition);
+  }
 
-        .button {
-          padding: 10px 15px;
-          font-size: 15px;
-        }
-      }
+  .auth-form input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+  .auth-form .switch-form {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: block;
+    margin: 1rem auto 0;
+    text-align: center;
+    width: 100%;
+    padding: 0.5rem 0;
+    transition: var(--transition);
+  }
 
-      .category,
-      .dish {
-        animation: fadeIn 0.3s ease-out;
-      }
-    </style>
+  .auth-form .switch-form:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      padding: 0.8rem 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .header button {
+      margin: 0.3rem;
+      font-size: 0.9rem;
+    }
+    
+    .main {
+      padding: 1rem;
+    }
+    
+    .category-header {
+      padding: 0.8rem 1rem;
+    }
+    
+    .recipe-content {
+      min-height: 300px;
+      padding: 1rem;
+    }
+    
+    .recipe-content textarea {
+      min-height: 300px;
+      padding: 1rem;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .category,
+  .dish,
+  .recipe-content,
+  .button {
+    animation: fadeIn 0.4s ease-out;
+  }
+</style>
   </head>
   <body>
     <div class="header">
