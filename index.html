@@ -9,404 +9,412 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-  :root {
-    --primary-color: #4a6b57;
-    --primary-light: #6d8b74;
-    --secondary-color: #f7e1d7;
-    --accent-color: #d8b4a0;
-    --text-color: #333;
-    --light-text: #f8f9fa;
-    --background: #f8f5f2;
-    --card-bg: #ffffff;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --radius: 12px;
-    --transition: all 0.3s ease;
-  }
+      :root {
+        --primary-color: #6a5acd; /* Сине-фиолетовый */
+        --primary-light: #9370db;
+        --secondary-color: #483d8b;
+        --accent-color: #7b68ee;
+        --text-color: #ffffff;
+        --light-text: #f8f9fa;
+        --background: #121212;
+        --card-bg: #1e1e1e;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --radius: 12px;
+        --transition: all 0.3s ease;
+      }
 
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--background);
-    color: var(--text-color);
-    line-height: 1.6;
-  }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--background);
+        color: var(--text-color);
+        line-height: 1.6;
+      }
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--primary-color);
-    padding: 1rem 2rem;
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--primary-color);
+        padding: 1rem 2rem;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
 
-  .header h1 {
-    flex-grow: 1;
-    text-align: center;
-    margin: 0;
-    color: var(--light-text);
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
+      .header h1 {
+        flex-grow: 1;
+        text-align: center;
+        margin: 0;
+        color: var(--light-text);
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
 
-  .header button {
-    background: none;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0.5rem 1rem;
-    color: var(--light-text);
-    border-radius: 20px;
-    transition: var(--transition);
-    font-weight: 500;
-    margin: 0 0.5rem;
-  }
+      .header button {
+        background: none;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: var(--light-text);
+        border-radius: 20px;
+        transition: var(--transition);
+        font-weight: 500;
+        margin: 0 0.5rem;
+      }
 
-  .header button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-  }
+      .header button:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+      }
 
-  .main {
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-  }
+      .main {
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
 
-  h3 {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    font-size: 1.4rem;
-    font-weight: 600;
-  }
+      h3 {
+        color: var(--primary-light);
+        margin-bottom: 1.5rem;
+        font-size: 1.4rem;
+        font-weight: 600;
+      }
 
-  .category {
-    margin-bottom: 1.5rem;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    transition: var(--transition);
-  }
+      .category {
+        margin-bottom: 1.5rem;
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: var(--transition);
+      }
 
-  .category:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  }
+      .category:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      }
 
-  .category-header {
-    display: flex;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background-color: var(--primary-light);
-    color: var(--light-text);
-  }
+      .category-header {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        background-color: var(--secondary-color);
+        color: var(--light-text);
+      }
 
-  .category button {
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-    text-align: left;
-    flex: 1;
-    padding: 0;
-    background: none;
-    font-weight: 500;
-    color: inherit;
-  }
+      .category button {
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        text-align: left;
+        flex: 1;
+        padding: 0;
+        background: none;
+        font-weight: 500;
+        color: inherit;
+      }
 
-  .category-actions {
-    display: flex;
-    gap: 1rem;
-  }
+      .category-actions {
+        display: flex;
+        gap: 1rem;
+      }
 
-  .category-actions img {
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    opacity: 0.9;
-    transition: var(--transition);
-    filter: brightness(0) invert(1);
-  }
+      .category-actions img {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        opacity: 0.9;
+        transition: var(--transition);
+        filter: brightness(0) invert(1);
+      }
 
-  .category-actions img:hover {
-    opacity: 1;
-    transform: scale(1.1);
-  }
+      .category-actions img:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
 
-  .dishes {
-    display: none;
-    padding: 0 1.5rem 1.5rem;
-    background-color: var(--card-bg);
-  }
+      .dishes {
+        display: none;
+        padding: 0 1.5rem 1.5rem;
+        background-color: var(--card-bg);
+      }
 
-  .dish {
-    display: flex;
-    align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    transition: var(--transition);
-  }
+      .dish {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: var(--transition);
+      }
 
-  .dish:hover {
-    background-color: rgba(0, 0, 0, 0.02);
-  }
+      .dish:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
 
-  .dish:last-child {
-    border-bottom: none;
-  }
+      .dish:last-child {
+        border-bottom: none;
+      }
 
-  .dish button {
-    flex: 1;
-    border: none;
-    background: none;
-    text-align: left;
-    padding: 0.5rem 0;
-    cursor: pointer;
-    font-size: 1rem;
-    color: var(--text-color);
-    transition: var(--transition);
-  }
+      .dish button {
+        flex: 1;
+        border: none;
+        background: none;
+        text-align: left;
+        padding: 0.5rem 0;
+        cursor: pointer;
+        font-size: 1rem;
+        color: var(--text-color);
+        transition: var(--transition);
+      }
 
-  .dish button:hover {
-    color: var(--primary-color);
-    padding-left: 5px;
-  }
+      .dish button:hover {
+        color: var(--accent-color);
+        padding-left: 5px;
+      }
 
-  .dish-actions {
-    display: flex;
-    gap: 1rem;
-  }
+      .dish-actions {
+        display: flex;
+        gap: 1rem;
+      }
 
-  .dish-actions img {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    opacity: 0.7;
-    transition: var(--transition);
-  }
+      .dish-actions img {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: var(--transition);
+      }
 
-  .dish-actions img:hover {
-    opacity: 1;
-    transform: scale(1.1);
-  }
+      .dish-actions img:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
 
-  .button {
-    background-color: var(--primary-color);
-    color: var(--light-text);
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    display: inline-block;
-    text-align: center;
-    transition: var(--transition);
-    width: 100%;
-    margin: 1rem 0;
-    box-shadow: var(--shadow);
-  }
+      .button {
+        background-color: var(--primary-color);
+        color: var(--light-text);
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        display: inline-block;
+        text-align: center;
+        transition: var(--transition);
+        width: 100%;
+        margin: 1rem 0;
+        box-shadow: var(--shadow);
+      }
 
-  .button:hover {
-    background-color: var(--primary-light);
-    transform: translateY(-2px);
-  }
+      .button:hover {
+        background-color: var(--primary-light);
+        transform: translateY(-2px);
+      }
 
-  .button.secondary {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-  }
+      .button.secondary {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+      }
 
-  .button.secondary:hover {
-    background-color: var(--accent-color);
-  }
+      .button.secondary:hover {
+        background-color: var(--accent-color);
+      }
 
-  .input-group {
-    margin-bottom: 1.5rem;
-  }
+      .input-group {
+        margin-bottom: 1.5rem;
+      }
 
-  .input-group input {
-    width: 100%;
-    padding: 0.8rem 1.2rem;
-    border: 1px solid #ddd;
-    border-radius: var(--radius);
-    font-size: 1rem;
-    box-sizing: border-box;
-    margin-bottom: 1rem;
-    transition: var(--transition);
-    background-color: var(--card-bg);
-  }
+      .input-group input {
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid #444;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        box-sizing: border-box;
+        margin-bottom: 1rem;
+        transition: var(--transition);
+        background-color: #2d2d2d;
+        color: var(--text-color);
+      }
 
-  .input-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(74, 107, 87, 0.2);
-  }
+      .input-group input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+        box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.3);
+      }
 
-  .recipe-content {
-    margin: 2rem 0;
-    min-height: 400px;
-    padding: 1.5rem;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
+      .recipe-content {
+        margin: 2rem 0;
+        padding: 0;
+        background: transparent;
+        border-radius: var(--radius);
+        color: var(--text-color);
+        white-space: pre-wrap;
+        line-height: 1.8;
+        font-size: 1.1rem;
+      }
 
-  .recipe-content textarea {
-    width: 100%;
-    min-height: 400px;
-    padding: 1.5rem;
-    border: 1px solid #ddd;
-    border-radius: var(--radius);
-    font-size: 1rem;
-    box-sizing: border-box;
-    resize: vertical;
-    line-height: 1.6;
-    transition: var(--transition);
-    background-color: var(--card-bg);
-  }
+      .recipe-content.edit-mode {
+        background: #2d2d2d;
+        border: 1px solid var(--primary-light);
+        padding: 1.5rem;
+        min-height: 300px;
+        outline: none;
+        cursor: text;
+      }
 
-  .recipe-content textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(74, 107, 87, 0.2);
-  }
+      .recipe-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
 
-  .auth-form {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(5px);
-  }
+      .recipe-actions button {
+        width: auto;
+        margin: 0;
+      }
 
-  .auth-form .form-container {
-    background-color: var(--card-bg);
-    padding: 2.5rem;
-    border-radius: var(--radius);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    width: 90%;
-    max-width: 400px;
-    animation: fadeInUp 0.4s ease-out;
-  }
+      .auth-form {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
 
-  .auth-form h3 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: var(--primary-color);
-  }
+      .auth-form .form-container {
+        background-color: var(--card-bg);
+        padding: 2.5rem;
+        border-radius: var(--radius);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 400px;
+        animation: fadeInUp 0.4s ease-out;
+      }
 
-  .auth-form .error-message {
-    color: #e74c3c;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    font-size: 0.9rem;
-  }
+      .auth-form h3 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: var(--primary-light);
+      }
 
-  .auth-form input {
-    width: 100%;
-    padding: 0.8rem 1.2rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    border-radius: var(--radius);
-    font-size: 1rem;
-    transition: var(--transition);
-  }
+      .auth-form .error-message {
+        color: #ff6b6b;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+      }
 
-  .auth-form input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-  }
+      .auth-form input {
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        margin-bottom: 1rem;
+        border: 1px solid #444;
+        border-radius: var(--radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: #2d2d2d;
+        color: var(--text-color);
+      }
 
-  .auth-form .switch-form {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 0.9rem;
-    display: block;
-    margin: 1rem auto 0;
-    text-align: center;
-    width: 100%;
-    padding: 0.5rem 0;
-    transition: var(--transition);
-  }
+      .auth-form input:focus {
+        outline: none;
+        border-color: var(--primary-light);
+      }
 
-  .auth-form .switch-form:hover {
-    color: var(--primary-light);
-    text-decoration: underline;
-  }
+      .auth-form .switch-form {
+        background: none;
+        border: none;
+        color: var(--primary-light);
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: block;
+        margin: 1rem auto 0;
+        text-align: center;
+        width: 100%;
+        padding: 0.5rem 0;
+        transition: var(--transition);
+      }
 
-  @media (max-width: 768px) {
-    .header {
-      padding: 0.8rem 1rem;
-      flex-wrap: wrap;
-    }
-    
-    .header button {
-      margin: 0.3rem;
-      font-size: 0.9rem;
-    }
-    
-    .main {
-      padding: 1rem;
-    }
-    
-    .category-header {
-      padding: 0.8rem 1rem;
-    }
-    
-    .recipe-content {
-      min-height: 300px;
-      padding: 1rem;
-    }
-    
-    .recipe-content textarea {
-      min-height: 300px;
-      padding: 1rem;
-    }
-  }
+      .auth-form .switch-form:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+      }
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+      .recipe-content {
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        max-width: 100%;
+      }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+      .recipe-content {
+        overflow-x: auto;
+      }
 
-  .category,
-  .dish,
-  .recipe-content,
-  .button {
-    animation: fadeIn 0.4s ease-out;
-  }
-</style>
+      @media (max-width: 768px) {
+        .header {
+          padding: 0.8rem 1rem;
+          flex-wrap: wrap;
+        }
+
+        .header button {
+          margin: 0.3rem;
+          font-size: 0.9rem;
+        }
+
+        .main {
+          padding: 1rem;
+        }
+
+        .category-header {
+          padding: 0.8rem 1rem;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .category,
+      .dish,
+      .recipe-content,
+      .button {
+        animation: fadeIn 0.4s ease-out;
+      }
+    </style>
   </head>
   <body>
     <div class="header">
@@ -419,7 +427,7 @@
       <div id="categories"></div>
     </div>
 
-    <div id="add-menu" class="main">
+    <div id="add-menu" class="main" style="display: none">
       <button onclick="showMainMenu()">⬅ Назад</button>
       <h3>Додати категорію</h3>
       <div class="input-group">
@@ -432,20 +440,23 @@
       </div>
     </div>
 
-    <div id="category-menu" class="main">
-      <button onclick="showMainMenu()">⬅ Назад</button>
-      <h3 id="category-title"></h3>
-      <div id="category-dishes"></div>
-    </div>
-
-    <div id="recipe-menu" class="main">
+    <div id="recipe-menu" class="main" style="display: none">
       <button onclick="goBackFromRecipe()">⬅ Назад</button>
       <h3 id="recipe-title">Назва страви</h3>
-      <div class="recipe-content">
-        <textarea id="recipe-text" placeholder="Тут можна писати рецепт..."></textarea>
+      <div
+        class="recipe-content"
+        id="recipe-display"
+        contenteditable="false"
+      ></div>
+      <div class="recipe-actions" id="recipe-actions" style="display: none">
+        <button class="button" onclick="saveRecipe()">Зберегти</button>
+        <button class="button secondary" onclick="cancelEdit()">
+          Скасувати
+        </button>
       </div>
-      <button class="button" id="edit-button" onclick="toggleEditMode()">Редагувати</button>
-      <button class="button" id="save-button" style="display:none;" onclick="saveRecipe()">Зберегти</button>
+      <button class="button" id="edit-button" onclick="startEdit()">
+        Редагувати
+      </button>
     </div>
 
     <!-- Auth Forms -->
@@ -492,31 +503,24 @@
         appId: "1:1234567890:web:abcdef1234567890",
       };
 
-      // Инициализация Firebase
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
-      const database = firebase.database();
+      const db = firebase.database();
 
-      // Глобальные переменные
       let currentUser = null;
-      let categories = [];
-      let recipes = {}; // Объект с рецептами
+      let currentCat = null;
       let currentDish = null;
-      let currentCategoryIndex = -1;
-      let isEditMode = false;
 
-      // ========== Аутентификация ==========
+      // ==================== Аутентификация ====================
       function toggleAuthMenu() {
         if (currentUser) {
-          logout();
+          if (confirm("Вийти?")) {
+            auth.signOut();
+          }
         } else {
           document.getElementById("auth-menu").style.display = "flex";
           showLoginForm();
         }
-      }
-
-      function hideAuthMenu() {
-        document.getElementById("auth-menu").style.display = "none";
       }
 
       function showLoginForm() {
@@ -531,196 +535,101 @@
         document.getElementById("register-error").textContent = "";
       }
 
-      function updateAuthButton() {
-        const authButton = document.getElementById("authButton");
-        authButton.textContent = currentUser ? "Вийти" : "Увійти";
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          currentUser = user;
+          hideAuthMenu();
+          loadCategories();
+          document.getElementById("authButton").textContent = "Вийти";
+        } else {
+          currentUser = null;
+          document.getElementById("categories").innerHTML = "";
+          document.getElementById("authButton").textContent = "Увійти";
+          showMainMenu();
+        }
+      });
+
+      function hideAuthMenu() {
+        document.getElementById("auth-menu").style.display = "none";
       }
 
       function login() {
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
-        const errorElement = document.getElementById("login-error");
+        const error = document.getElementById("login-error");
 
         auth
           .signInWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            currentUser = userCredential.user;
-            hideAuthMenu();
-            loadUserData();
-            updateAuthButton();
-            showMainMenu();
-          })
-          .catch((error) => {
-            errorElement.textContent = error.message;
-          });
+          .catch((err) => (error.textContent = err.message));
       }
 
       function register() {
-        const name = document.getElementById("register-name").value;
+        const name = document.getElementById("register-name").value.trim();
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
-        const confirmPassword = document.getElementById(
+        const confirm = document.getElementById(
           "register-confirm-password"
         ).value;
-        const errorElement = document.getElementById("register-error");
+        const error = document.getElementById("register-error");
 
-        if (password !== confirmPassword) {
-          errorElement.textContent = "Паролі не співпадають";
+        if (password !== confirm) {
+          error.textContent = "Паролі не співпадають";
           return;
         }
 
         auth
           .createUserWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            currentUser = userCredential.user;
-            return database.ref(`users/${currentUser.uid}`).set({
-              name: name,
-              email: email,
-              categories: [],
-              recipes: {},
-            });
+          .then((cred) => {
+            return db
+              .ref(`users/${cred.user.uid}/profile`)
+              .set({ name, email });
           })
           .then(() => {
             hideAuthMenu();
-            loadUserData();
-            updateAuthButton();
-            showMainMenu();
           })
-          .catch((error) => {
-            errorElement.textContent = error.message;
+          .catch((err) => (error.textContent = err.message));
+      }
+
+      // ==================== Категории ====================
+      function loadCategories() {
+        if (!currentUser) return;
+        db.ref(`users/${currentUser.uid}/categories`)
+          .once("value")
+          .then((snap) => {
+            const data = snap.val() || {};
+            renderCategories(data);
           });
       }
 
-      function logout() {
-        if (!confirm("Ви впевнені, що хочете вийти з акаунту?")) {
-          return;
-        }
-
-        auth.signOut().then(() => {
-          currentUser = null;
-          categories = [];
-          recipes = {};
-          renderCategories();
-          updateAuthButton();
-          showMainMenu();
-        });
-      }
-
-      // ========== Работа с данными ==========
-      async function loadUserData() {
-        if (!currentUser) return;
-
-        try {
-          // Загружаем категории
-          const categoriesSnapshot = await database
-            .ref(`users/${currentUser.uid}/categories`)
-            .once("value");
-          categories = categoriesSnapshot.val() || [];
-
-          // Загружаем рецепты
-          const recipesSnapshot = await database
-            .ref(`users/${currentUser.uid}/recipes`)
-            .once("value");
-          recipes = recipesSnapshot.val() || {};
-
-          renderCategories();
-          console.log("Данные успешно загружены");
-        } catch (error) {
-          console.error("Ошибка загрузки данных:", error);
-        }
-      }
-
-      function saveCategories() {
-        if (!currentUser) return;
-        database
-          .ref(`users/${currentUser.uid}/categories`)
-          .set(categories)
-          .then(() => console.log("Категории сохранены"))
-          .catch((err) => console.error("Ошибка сохранения категорий:", err));
-      }
-
-      function saveRecipes() {
-        if (!currentUser) return;
-        database
-          .ref(`users/${currentUser.uid}/recipes`)
-          .set(recipes)
-          .then(() => console.log("Рецепты сохранены"))
-          .catch((err) => console.error("Ошибка сохранения рецептов:", err));
-      }
-
-      // ========== Работа с категориями ==========
-      function renderCategories() {
+      function renderCategories(categories) {
         const container = document.getElementById("categories");
         container.innerHTML = "";
 
-        if (categories.length === 0) {
-          container.innerHTML = "<p>Ще немає категорій. Додайте першу!</p>";
-          return;
-        }
+        for (const [catId, cat] of Object.entries(categories)) {
+          const div = document.createElement("div");
+          div.className = "category";
 
-        categories.forEach((category, index) => {
-          const categoryElement = document.createElement("div");
-          categoryElement.className = "category";
-          categoryElement.innerHTML = `
-                    <div class="category-header">
-                        <button onclick="toggleDishes(${index})">${
-            category.name || "Без назви"
-          }</button>
-                        <div class="category-actions">
-                            <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" style="width:24px; height:24px;" onclick="editCategory(${index})" alt="Редагувати">
-                            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" style="width:24px; height:24px;" onclick="deleteCategory(${index})" alt="Видалити">
-                        </div>
-                    </div>
-                    <div class="dishes" id="dishes-${index}"></div>
-                `;
-          container.appendChild(categoryElement);
-        });
-      }
+          div.innerHTML = `
+        <div class="category-header">
+          <button onclick="toggleDishes('${catId}')">${escapeHtml(
+            cat.name
+          )}</button>
+          <div class="category-actions">
+            <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" title="Редагувати категорію" onclick="editCategory('${catId}')" />
+            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" title="Видалити категорію" onclick="deleteCategory('${catId}')" />
+          </div>
+        </div>
+        <div class="dishes" id="dishes-${catId}" style="display:none;"></div>
+      `;
 
-      function toggleDishes(index) {
-        const dishesContainer = document.getElementById(`dishes-${index}`);
-
-        if (
-          dishesContainer.style.display === "none" ||
-          !dishesContainer.style.display
-        ) {
-          renderDishes(index);
-          dishesContainer.style.display = "block";
-        } else {
-          dishesContainer.style.display = "none";
+          container.appendChild(div);
         }
       }
 
-      function renderDishes(categoryIndex) {
-        const container = document.getElementById(`dishes-${categoryIndex}`);
-        const category = categories[categoryIndex];
-
-        if (!category.dishes) {
-          category.dishes = [];
-          saveCategories();
-        }
-
-        container.innerHTML = `
-                <button class="button secondary" onclick="addDishToCategory(${categoryIndex})">+ Додати страву</button>
-            `;
-
-        if (category.dishes.length === 0) {
-          container.innerHTML += "<p>Немає страв у цій категорії</p>";
-          return;
-        }
-
-        category.dishes.forEach((dish, dishIndex) => {
-          const dishElement = document.createElement("div");
-          dishElement.className = "dish";
-          dishElement.innerHTML = `
-                    <button onclick="openRecipe('${dish}', ${categoryIndex})">${dish}</button>
-                    <div class="dish-actions">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" style="width:24px; height:24px;" onclick="event.stopPropagation(); editDish(${categoryIndex}, ${dishIndex})" alt="Редагувати">
-                        <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" onclick="event.stopPropagation(); deleteDish(${categoryIndex}, ${dishIndex})" alt="Видалити">
-                    </div>
-                `;
-          container.appendChild(dishElement);
-        });
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
       }
 
       function showAddMenu() {
@@ -730,207 +639,184 @@
 
       function addNewCategory() {
         const name = document.getElementById("new-category-name").value.trim();
+        if (!name) return alert("Введіть назву");
 
-        if (!name) {
-          alert("Будь ласка, введіть назву категорії");
-          return;
-        }
-
-        categories.push({
-          name: name,
-          dishes: [],
-        });
-
-        saveCategories();
-        renderCategories();
-        showMainMenu();
+        const catId = db.ref().push().key;
+        db.ref(`users/${currentUser.uid}/categories/${catId}`)
+          .set({
+            name,
+            dishes: {},
+          })
+          .then(() => {
+            showMainMenu();
+            loadCategories();
+          });
       }
 
-      function editCategory(index) {
-        const newName = prompt(
-          "Введіть нову назву категорії:",
-          categories[index].name
-        );
-
-        if (newName && newName.trim()) {
-          categories[index].name = newName.trim();
-          saveCategories();
-          renderCategories();
-        }
+      function editCategory(catId) {
+        db.ref(`users/${currentUser.uid}/categories/${catId}/name`)
+          .once("value")
+          .then((snap) => {
+            const oldName = snap.val() || "";
+            const newName = prompt("Нова назва категорії:", oldName);
+            if (newName && newName.trim() !== "" && newName !== oldName) {
+              db.ref(`users/${currentUser.uid}/categories/${catId}/name`)
+                .set(newName.trim())
+                .then(loadCategories);
+            }
+          });
       }
 
-      function deleteCategory(index) {
-        if (
-          confirm(
-            `Ви впевнені, що хочете видалити категорію "${categories[index].name}"?`
-          )
-        ) {
-          categories.splice(index, 1);
-          saveCategories();
-          renderCategories();
-        }
+      function deleteCategory(catId) {
+        if (!confirm("Видалити категорію?")) return;
+        db.ref(`users/${currentUser.uid}/categories/${catId}`)
+          .remove()
+          .then(loadCategories);
       }
 
-      // ========== Работа с блюдами ==========
-      function addDishToCategory(categoryIndex) {
-        const dishName = prompt("Введіть назву нової страви:");
-
-        if (dishName && dishName.trim()) {
-          if (!categories[categoryIndex].dishes) {
-            categories[categoryIndex].dishes = [];
-          }
-
-          categories[categoryIndex].dishes.push(dishName.trim());
-          saveCategories();
-          renderDishes(categoryIndex);
-
-          // Создаем пустой рецепт, если его еще нет
-          if (!recipes[dishName.trim()]) {
-            recipes[dishName.trim()] = {
-              name: dishName.trim(),
-              content: "",
-            };
-            saveRecipes();
-          }
+      // ==================== Блюда ====================
+      function toggleDishes(catId) {
+        const container = document.getElementById(`dishes-${catId}`);
+        if (container.style.display === "block") {
+          container.style.display = "none";
+          container.innerHTML = ""; // Очистить при закрытии
+        } else {
+          loadDishes(catId);
+          container.style.display = "block";
         }
       }
 
-      function editDish(categoryIndex, dishIndex) {
-        const oldName = categories[categoryIndex].dishes[dishIndex];
-        const newName = prompt("Введіть нову назву страви:", oldName);
+      function loadDishes(catId) {
+        db.ref(`users/${currentUser.uid}/categories/${catId}/dishes`)
+          .once("value")
+          .then((snap) => {
+            const dishes = snap.val() || {};
+            renderDishes(catId, dishes);
+          });
+      }
 
-        if (newName && newName.trim()) {
-          // Обновляем рецепт
-          if (recipes[oldName]) {
-            recipes[newName.trim()] = recipes[oldName];
-            recipes[newName.trim()].name = newName.trim();
-            delete recipes[oldName];
-            saveRecipes();
-          }
+      function renderDishes(catId, dishes) {
+        const container = document.getElementById(`dishes-${catId}`);
+        container.innerHTML = `<button class="button secondary" onclick="addDish('${catId}')">+ Додати страву</button>`;
 
-          // Обновляем название в категории
-          categories[categoryIndex].dishes[dishIndex] = newName.trim();
-          saveCategories();
-          renderDishes(categoryIndex);
+        for (const [dishId, dish] of Object.entries(dishes)) {
+          container.insertAdjacentHTML(
+            "beforeend",
+            `
+        <div class="dish">
+          <button onclick="openDish('${catId}','${dishId}')">${escapeHtml(
+              dish.name
+            )}</button>
+          <div class="dish-actions">
+            <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" title="Редагувати страву" onclick="editDish('${catId}','${dishId}')" />
+            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" title="Видалити страву" onclick="deleteDish('${catId}','${dishId}')" />
+          </div>
+        </div>
+      `
+          );
         }
       }
 
-      function deleteDish(categoryIndex, dishIndex) {
-        const dishName = categories[categoryIndex].dishes[dishIndex];
-
-        if (confirm(`Ви впевнені, що хочете видалити страву "${dishName}"?`)) {
-          // Удаляем из категории
-          categories[categoryIndex].dishes.splice(dishIndex, 1);
-          saveCategories();
-
-          // Удаляем рецепт
-          if (recipes[dishName]) {
-            delete recipes[dishName];
-            saveRecipes();
-          }
-
-          renderDishes(categoryIndex);
-        }
+      function addDish(catId) {
+        const name = prompt("Назва страви?");
+        if (!name || !name.trim()) return;
+        const dishId = db.ref().push().key;
+        db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}`)
+          .set({
+            name: name.trim(),
+            description: "",
+          })
+          .then(() => loadDishes(catId));
       }
 
-      // ========== Работа с рецептами ==========
-      function openRecipe(dishName, categoryIndex) {
-        currentDish = dishName;
-        currentCategoryIndex = categoryIndex;
-        document.getElementById("recipe-title").textContent = dishName;
-
-        // Если рецепта нет - создаем новый
-        if (!recipes[dishName]) {
-          recipes[dishName] = {
-            name: dishName,
-            content: "",
-          };
-          saveRecipes();
-        }
-
-        loadRecipeContent();
-        showScreen("recipe-menu");
+      function editDish(catId, dishId) {
+        db.ref(
+          `users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/name`
+        )
+          .once("value")
+          .then((snap) => {
+            const oldName = snap.val() || "";
+            const newName = prompt("Введіть нову назву страви:", oldName);
+            if (newName && newName.trim() !== "" && newName !== oldName) {
+              db.ref(
+                `users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/name`
+              )
+                .set(newName.trim())
+                .then(() => loadDishes(catId));
+            }
+          });
       }
 
-      function loadRecipeContent() {
-        const recipe = recipes[currentDish];
-        const textarea = document.getElementById("recipe-text");
-
-        if (!recipe) {
-          textarea.value = "";
-          return;
-        }
-
-        textarea.value = recipe.content || "";
-        textarea.readOnly = true;
-        document.getElementById("edit-button").style.display = "block";
-        document.getElementById("save-button").style.display = "none";
-        isEditMode = false;
+      function deleteDish(catId, dishId) {
+        if (!confirm("Видалити страву?")) return;
+        db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}`)
+          .remove()
+          .then(() => loadDishes(catId));
       }
 
-      function toggleEditMode() {
-        const textarea = document.getElementById("recipe-text");
-        isEditMode = !isEditMode;
-        
-        textarea.readOnly = !isEditMode;
-        document.getElementById("edit-button").style.display = isEditMode ? "none" : "block";
-        document.getElementById("save-button").style.display = isEditMode ? "block" : "none";
+      // ==================== Рецепт (описание) ====================
+      function openDish(catId, dishId) {
+        currentCat = catId;
+        currentDish = dishId;
+        db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}`)
+          .once("value")
+          .then((snap) => {
+            const dish = snap.val();
+            if (!dish) return alert("Страва не знайдена");
+            document.getElementById("recipe-title").textContent = dish.name;
+            document.getElementById("recipe-display").textContent =
+              dish.description || "";
+            showScreen("recipe-menu");
+            cancelEdit(); // Сбросить редактирование при открытии
+          });
+      }
+
+      function startEdit() {
+        const disp = document.getElementById("recipe-display");
+        disp.contentEditable = "true";
+        disp.classList.add("edit-mode");
+        disp.focus();
+        document.getElementById("edit-button").style.display = "none";
+        document.getElementById("recipe-actions").style.display = "flex";
       }
 
       function saveRecipe() {
-        const recipe = recipes[currentDish];
-        if (!recipe) return;
-
-        recipe.content = document.getElementById("recipe-text").value;
-        saveRecipes();
-        toggleEditMode();
+        const desc = document.getElementById("recipe-display").innerText.trim();
+        db.ref(
+          `users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/description`
+        )
+          .set(desc)
+          .then(() => {
+            cancelEdit();
+          });
       }
 
-      // ========== Навигация ==========
-      function showScreen(screenId) {
-        [
-          "main-menu",
-          "add-menu",
-          "category-menu",
-          "recipe-menu",
-          "auth-menu",
-        ].forEach((id) => {
-          document.getElementById(id).style.display =
-            id === screenId ? "block" : "none";
+      function cancelEdit() {
+        document.getElementById("recipe-display").contentEditable = "false";
+        document.getElementById("recipe-display").classList.remove("edit-mode");
+        document.getElementById("edit-button").style.display = "block";
+        document.getElementById("recipe-actions").style.display = "none";
+      }
+
+      // ==================== Навигация ====================
+      function showScreen(id) {
+        ["main-menu", "add-menu", "recipe-menu"].forEach((s) => {
+          document.getElementById(s).style.display =
+            s === id ? "block" : "none";
         });
       }
 
       function showMainMenu() {
         showScreen("main-menu");
+        loadCategories();
       }
 
       function goBackFromRecipe() {
-        // Возвращаемся либо в категорию, либо в главное меню
-        if (currentCategoryIndex !== -1) {
-          document.getElementById("category-title").textContent =
-            categories[currentCategoryIndex].name;
-          showScreen("category-menu");
-        } else {
-          showMainMenu();
-        }
+        showMainMenu();
       }
 
-      // ========== Инициализация ==========
+      // ==================== Инициализация ====================
       document.addEventListener("DOMContentLoaded", () => {
-        // Следим за состоянием аутентификации
-        auth.onAuthStateChanged((user) => {
-          if (user) {
-            currentUser = user;
-            updateAuthButton();
-            loadUserData();
-          } else {
-            currentUser = null;
-            updateAuthButton();
-            showMainMenu();
-          }
-        });
-
-        // Показываем главное меню при загрузке
         showMainMenu();
       });
     </script>
