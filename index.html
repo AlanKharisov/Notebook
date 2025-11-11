@@ -9,29 +9,25 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        /* ===== Палітра та базові змінні ===== */
         :root{
-            /* твої трав'яні кольори */
-            --grass-1: #35da0d;  /* яскравий трав'яний */
-            --grass-2: #1c6204;  /* глибший трав'яний */
+            --grass-1: #35da0d;
+            --grass-2: #1c6204;
 
-            /* мапуємо на тему */
             --primary-color: var(--grass-1);
             --secondary-color: var(--grass-2);
-            --primary-light: #57b833;   /* світліший відтінок для hover */
-            --accent-color: #49b028;    /* акцент (м'який лайм/трава) */
+            --primary-light: #57b833;
+            --accent-color: #49b028;
 
-            --text-color: #0f172a;      /* темно-сланцевий текст */
-            --light-text: #ffffff;      /* білий текст на зеленому */
-            --background: #f8fafc;      /* дуже світлий фон */
-            --card-bg: #ffffff;         /* картки білі */
-            --border: #e5e7eb;          /* світлі межі */
+            --text-color: #0f172a;
+            --light-text: #ffffff;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
 
             --shadow: 0 8px 22px rgba(2, 6, 23, 0.06);
             --radius: 14px;
             --transition: all .25s ease;
 
-            /* типографіка — збільшено для комфортного читання */
             --base-font: 18px;
             --h1: 1.65rem;
             --h3: 1.3rem;
@@ -40,7 +36,6 @@
             --small: .95rem;
         }
 
-        /* ===== Нормалізація та база ===== */
         html{ font-size: var(--base-font); }
         *, *::before, *::after{ box-sizing: border-box; }
         body{
@@ -53,7 +48,6 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ===== Хедер ===== */
         .header{
             display:flex; justify-content: space-between; align-items:center;
             background: var(--primary-color);
@@ -64,7 +58,7 @@
         }
         .header h1{
             flex:1; text-align:center; margin:0;
-            color:var(--light-text); font-size:var(--h1); font-weight:700;
+            color:var(--light-text); font-size: var(--h1); font-weight:700;
         }
         .header button{
             appearance:none; -webkit-appearance:none;
@@ -83,11 +77,9 @@
             outline-offset: 2px;
         }
 
-        /* ===== Контейнер ===== */
         .main{ padding: 1.25rem; max-width: 920px; margin: 0 auto; }
         h3{ color: var(--secondary-color); margin: 0 0 1.1rem; font-size: var(--h3); font-weight:800; }
 
-        /* ===== Категорії ===== */
         .category{
             margin-bottom: 1rem; background: var(--card-bg);
             border: 1px solid var(--border); border-radius: var(--radius);
@@ -111,7 +103,6 @@
         }
         .category-actions img:hover{ transform: scale(1.08); }
 
-        /* ===== Страви ===== */
         .dishes{ display:none; padding: 0 1rem 1rem; background: var(--card-bg); }
         .dish{
             display:flex; align-items:center; gap:.75rem;
@@ -119,7 +110,7 @@
             transition: var(--transition);
         }
         .dish:last-child{ border-bottom:none; }
-        .dish:hover{ background: #f1fbf3; }  /* легкий зелений тінт */
+        .dish:hover{ background: #f1fbf3; }
         .dish button{
             flex:1; border:none; background:none; text-align:left; cursor:pointer;
             font-size: var(--text); font-weight:600; color: var(--text-color);
@@ -130,7 +121,6 @@
         .dish-actions img{ width:22px; height:22px; cursor:pointer; transition: var(--transition); }
         .dish-actions img:hover{ transform: scale(1.08); }
 
-        /* ===== Кнопки (усі стани) ===== */
         .button{
             appearance:none; -webkit-appearance:none;
             background: var(--primary-color);
@@ -150,7 +140,6 @@
             outline-offset: 2px;
         }
 
-        /* вторинна/акцентна */
         .button.secondary{
             background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
             border: 1px solid rgba(73,176,40,.2);
@@ -167,7 +156,6 @@
             box-shadow: 0 12px 24px rgba(73,176,40,.24);
         }
 
-        /* outline-кнопка «Назад» */
         .button.back{
             background: none;
             color: var(--primary-color);
@@ -183,7 +171,6 @@
             outline-offset: 2px;
         }
 
-        /* ===== Інпути ===== */
         .input-group{ margin-bottom: 1.2rem; }
         .input-group input,
         .auth-form input{
@@ -198,7 +185,6 @@
             box-shadow: 0 0 0 3px rgba(73,176,40,.22);
         }
 
-        /* ===== Рецепт ===== */
         .recipe-content{
             margin: 1.2rem 0; padding:0;
             font-size: 1.125rem; line-height:1.8;
@@ -216,7 +202,6 @@
         .recipe-actions{ display:flex; gap:.8rem; margin-top:.6rem; }
         .recipe-actions button{ width:auto; margin:0; }
 
-        /* ===== Модалка логіну/реєстрації ===== */
         .auth-form{
             position:fixed; inset:0;
             background: rgba(0,0,0,.55);
@@ -246,10 +231,6 @@
         }
         .auth-form .switch-form:hover{ color: var(--primary-light); text-decoration: underline; }
 
-        /* ===== Навігація екранів ===== */
-        /* (залишаємо поведінку з JS, стилі базові вже є) */
-
-        /* ===== Адаптив ===== */
         @media (max-width: 768px){
             .header{ padding: .7rem .9rem; flex-wrap: wrap; }
             .header button{ margin:.25rem; font-size: .95rem; }
@@ -257,7 +238,6 @@
             .category-header{ padding:.75rem .9rem; }
         }
 
-        /* ===== Анімації ===== */
         @keyframes fadeIn{
             from{ opacity:0; transform: translateY(8px); }
             to{ opacity:1; transform: translateY(0); }
@@ -267,6 +247,63 @@
             to{ opacity:1; transform: translateY(0); }
         }
         .category, .dish, .recipe-content, .button{ animation: fadeIn .35s ease-out; }
+
+        /* ===== Панель таймерів Аска ===== */
+        .ask-timers-panel{
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: .6rem;
+            z-index: 200;
+        }
+        .ask-timer{
+            display:flex;
+            align-items:center;
+            gap:.55rem;
+            background: var(--card-bg);
+            border-radius: 999px;
+            padding: .35rem .8rem .35rem .4rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            font-size: .85rem;
+        }
+        .ask-timer-circle{
+            --progress: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: conic-gradient(
+                    var(--primary-color) calc(var(--progress) * 360deg),
+                    #e5e7eb 0deg
+            );
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size: .7rem;
+            font-weight:700;
+            color: var(--text-color);
+        }
+        .ask-timer-text{
+            display:flex;
+            flex-direction:column;
+            gap:2px;
+        }
+        .ask-timer-label{
+            font-weight:600;
+        }
+        .ask-timer-eta{
+            font-size:.75rem;
+            color:#6b7280;
+        }
+
+        @media (max-width: 768px){
+            .ask-timers-panel{
+                right:.6rem;
+                bottom:.6rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -274,6 +311,9 @@
     <button id="authButton" onclick="toggleAuthMenu()">Увійти</button>
     <button onclick="showAddMenu()">Додати категорію</button>
 </div>
+
+<!-- Панель таймерів Аска -->
+<div class="ask-timers-panel" id="ask-timers-panel"></div>
 
 <div id="main-menu" class="main">
     <h3>Категорії страв</h3>
@@ -345,7 +385,7 @@
 </div>
 
 <script>
-    // Конфигурация Firebase
+    // ==================== Конфігурація Firebase ====================
     const firebaseConfig = {
         apiKey: "AIzaSyCsi129Y9ltNjMbNPU8D9s1JURMxVyeHYs",
         authDomain: "notebook-66f4e.firebaseapp.com",
@@ -364,7 +404,7 @@
     let currentCat = null;
     let currentDish = null;
 
-    // ==================== Аутентификация ====================
+    // ==================== Аутентифікація ====================
     function toggleAuthMenu() {
         if (currentUser) {
             if (confirm("Вийти?")) {
@@ -420,9 +460,7 @@
         const name = document.getElementById("register-name").value.trim();
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
-        const confirm = document.getElementById(
-            "register-confirm-password"
-        ).value;
+        const confirm = document.getElementById("register-confirm-password").value;
         const error = document.getElementById("register-error");
 
         if (password !== confirm) {
@@ -443,7 +481,7 @@
             .catch((err) => (error.textContent = err.message));
     }
 
-    // ==================== Категории ====================
+    // ==================== Категорії ====================
     function loadCategories() {
         if (!currentUser) return;
         db.ref(`users/${currentUser.uid}/categories`)
@@ -464,9 +502,7 @@
 
             div.innerHTML = `
         <div class="category-header">
-          <button onclick="toggleDishes('${catId}')">${escapeHtml(
-                cat.name
-            )}</button>
+          <button onclick="toggleDishes('${catId}')">${escapeHtml(cat.name)}</button>
           <div class="category-actions">
             <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" title="Редагувати категорію" onclick="editCategory('${catId}')" />
             <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" title="Видалити категорію" onclick="deleteCategory('${catId}')" />
@@ -527,12 +563,12 @@
             .then(loadCategories);
     }
 
-    // ==================== Блюда ====================
+    // ==================== Страви ====================
     function toggleDishes(catId) {
         const container = document.getElementById(`dishes-${catId}`);
         if (container.style.display === "block") {
             container.style.display = "none";
-            container.innerHTML = ""; // Очистить при закрытии
+            container.innerHTML = "";
         } else {
             loadDishes(catId);
             container.style.display = "block";
@@ -557,9 +593,7 @@
                 "beforeend",
                 `
         <div class="dish">
-          <button onclick="openDish('${catId}','${dishId}')">${escapeHtml(
-                    dish.name
-                )}</button>
+          <button onclick="openDish('${catId}','${dishId}')">${escapeHtml(dish.name)}</button>
           <div class="dish-actions">
             <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" title="Редагувати страву" onclick="editDish('${catId}','${dishId}')" />
             <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" title="Видалити страву" onclick="deleteDish('${catId}','${dishId}')" />
@@ -583,17 +617,13 @@
     }
 
     function editDish(catId, dishId) {
-        db.ref(
-            `users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/name`
-        )
+        db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/name`)
             .once("value")
             .then((snap) => {
                 const oldName = snap.val() || "";
                 const newName = prompt("Введіть нову назву страви:", oldName);
                 if (newName && newName.trim() !== "" && newName !== oldName) {
-                    db.ref(
-                        `users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/name`
-                    )
+                    db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/name`)
                         .set(newName.trim())
                         .then(() => loadDishes(catId));
                 }
@@ -607,7 +637,7 @@
             .then(() => loadDishes(catId));
     }
 
-    // ==================== Рецепт (описание) ====================
+    // ==================== Рецепт ====================
     function openDish(catId, dishId) {
         currentCat = catId;
         currentDish = dishId;
@@ -620,7 +650,7 @@
                 document.getElementById("recipe-display").textContent =
                     dish.description || "";
                 showScreen("recipe-menu");
-                cancelEdit(); // Сбросить редактирование при открытии
+                cancelEdit();
             });
     }
 
@@ -651,7 +681,7 @@
         document.getElementById("recipe-actions").style.display = "none";
     }
 
-    // ==================== Навигация ====================
+    // ==================== Навігація ====================
     function showScreen(id) {
         ["main-menu", "add-menu", "recipe-menu"].forEach((s) => {
             document.getElementById(s).style.display =
@@ -661,55 +691,729 @@
 
     function showMainMenu() {
         showScreen("main-menu");
-        loadCategories();
-    }
-
-    function goBackFromRecipe() {
-        showMainMenu();
-    }
-
-    // После успешного логина сохраняем аккаунт в localStorage
-    function saveAccountToStorage(email, uid) {
-        let accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-        if (!accounts.find((a) => a.email === email)) {
-            accounts.push({ email, uid });
-            localStorage.setItem("accounts", JSON.stringify(accounts));
+        if (currentUser) {
+            loadCategories();
         }
     }
 
-    // Загружаем и показываем список аккаунтов
-    function showAccountsList() {
-        const accounts = JSON.parse(localStorage.getItem("accounts")) || [];
-        const container = document.getElementById("accounts-list");
-        container.innerHTML = "";
-        accounts.forEach(({ email }) => {
-            const btn = document.createElement("button");
-            btn.textContent = email;
-            btn.onclick = () => switchAccount(email);
-            container.appendChild(btn);
-        });
+    function goBackFromRecipe() {
+        currentCat = null;
+        currentDish = null;
+        showMainMenu();
     }
 
-    // При выборе аккаунта показываем форму ввода пароля и логиним
-    function switchAccount(email) {
-        const password = prompt(`Введите пароль для ${email}`);
-        if (!password) return;
-        auth.signOut().then(() => {
-            auth
-                .signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    alert(`Вход выполнен под ${email}`);
-                    loadCategories();
-                })
-                .catch((err) => alert(err.message));
-        });
+    // ==================== Голосовий асистент Аск + таймери ====================
+    let askAwake = false;
+    let askInactivityTimer = null;
+    let recognition = null;
+    let askVoice = null;
+
+    // Таймери
+    let askTimers = []; // {id,label,endTime,durationMs}
+    let timersIntervalId = null;
+    let audioCtx = null;
+
+    // Читання рецепта з позицією
+    let askCurrentUtterance = null;
+    let askManuallyStopped = false;
+    let askCurrentDishKey = null;
+
+    function makeDishKey(catId, dishId) {
+        if (!currentUser || !catId || !dishId) return null;
+        return `${currentUser.uid}:${catId}:${dishId}`;
     }
 
-    // Вызови showAccountsList() там, где хочешь показать выбор аккаунтов
+    function storageKeyForDish(dishKey) {
+        return `ask_read_pos_${dishKey}`;
+    }
 
-    // ==================== Инициализация ====================
+    function saveReadingPosition(dishKey, pos) {
+        if (!dishKey) return;
+        try {
+            localStorage.setItem(storageKeyForDish(dishKey), String(pos));
+        } catch (e) {
+            console.warn("Не вдалося зберегти позицію читання:", e);
+        }
+    }
+
+    function getReadingPosition(dishKey) {
+        if (!dishKey) return 0;
+        try {
+            const v = localStorage.getItem(storageKeyForDish(dishKey));
+            if (!v) return 0;
+            const n = parseInt(v, 10);
+            return isNaN(n) ? 0 : n;
+        } catch (e) {
+            return 0;
+        }
+    }
+
+    function clearReadingPosition(dishKey) {
+        if (!dishKey) return;
+        try {
+            localStorage.removeItem(storageKeyForDish(dishKey));
+        } catch (e) {}
+    }
+
+    // ===== Парсинг рецепта: інгредієнти + Опис =====
+    function extractRecipeParts(fullText) {
+        const lines = fullText.split(/\r?\n/);
+        const ingredients = {};
+        const descriptionLines = [];
+        let inDescription = false;
+
+        for (let raw of lines) {
+            const line = raw.trim();
+            if (!line) continue;
+
+            const lower = line.toLowerCase();
+
+            if (lower.startsWith("опис")) {
+                inDescription = true;
+                continue;
+            }
+
+            if (inDescription) {
+                descriptionLines.push(line);
+            } else {
+                const dashIdx = line.indexOf("-");
+                if (dashIdx > 0) {
+                    const name = line.slice(0, dashIdx).trim().toLowerCase();
+                    const amount = line.slice(dashIdx + 1).trim();
+                    if (name && amount) {
+                        ingredients[name] = amount;
+                    }
+                }
+            }
+        }
+
+        const description = descriptionLines.join(" ");
+        return { ingredients, description };
+    }
+
+    function escapeRegExp(str) {
+        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function buildDescriptionWithAmounts(fullText) {
+        const { ingredients, description } = extractRecipeParts(fullText);
+        let text = description || fullText || "";
+
+        for (const [name, amount] of Object.entries(ingredients)) {
+            if (!name || !amount) continue;
+            const escaped = escapeRegExp(name);
+            const regex = new RegExp(escaped, "gi");
+            text = text.replace(regex, (match) => `${match} (${amount})`);
+        }
+
+        return text;
+    }
+
+    // ===== Таймери: збереження, UI, звук =====
+    function loadTimersFromStorage() {
+        try {
+            const raw = localStorage.getItem("ask_timers");
+            if (!raw) return [];
+            const arr = JSON.parse(raw);
+            if (!Array.isArray(arr)) return [];
+            return arr.map(t => ({
+                id: t.id,
+                label: t.label || "таймер",
+                endTime: Number(t.endTime),
+                durationMs: Number(t.durationMs) || 0
+            })).filter(t => t.endTime && t.durationMs);
+        } catch (e) {
+            console.warn("Не вдалося прочитати таймери:", e);
+            return [];
+        }
+    }
+
+    function saveTimersToStorage() {
+        try {
+            localStorage.setItem("ask_timers", JSON.stringify(askTimers));
+        } catch (e) {
+            console.warn("Не вдалося зберегти таймери:", e);
+        }
+    }
+
+    function playTimerBeep() {
+        try {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (!Ctx) return;
+            if (!audioCtx) audioCtx = new Ctx();
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.frequency.value = 900;
+            osc.type = "sine";
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        } catch (e) {
+            console.warn("Не вдалося програти звук таймера:", e);
+        }
+    }
+
+    function onTimerEnd(timerId) {
+        const idx = askTimers.findIndex(t => t.id === timerId);
+        if (idx === -1) return;
+        const timer = askTimers[idx];
+
+        playTimerBeep();
+        sayWithAsk(`Час вийшов. ${timer.label} готовий.`);
+
+        askTimers.splice(idx, 1);
+        saveTimersToStorage();
+        renderTimersUI();
+    }
+
+    function scheduleTimerTimeout(timer) {
+        const now = Date.now();
+        const diff = timer.endTime - now;
+        if (diff <= 0) {
+            onTimerEnd(timer.id);
+            return;
+        }
+        setTimeout(() => {
+            onTimerEnd(timer.id);
+        }, diff);
+    }
+
+    function formatTimeLeft(ms) {
+        if (ms < 0) ms = 0;
+        const totalSec = Math.floor(ms / 1000);
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        const mm = m.toString();
+        const ss = s.toString().padStart(2, "0");
+        return `${mm}:${ss}`;
+    }
+
+    function renderTimersUI() {
+        const panel = document.getElementById("ask-timers-panel");
+        if (!panel) return;
+
+        const now = Date.now();
+        if (!askTimers.length) {
+            panel.innerHTML = "";
+            return;
+        }
+
+        let html = "";
+        askTimers.forEach(t => {
+            const remaining = t.endTime - now;
+            const clamped = Math.max(0, remaining);
+            const progress = t.durationMs > 0 ? clamped / t.durationMs : 0;
+            const timeStr = formatTimeLeft(remaining);
+            const eta = remaining <= 0 ? "зараз" : "ще трохи";
+
+            html += `
+              <div class="ask-timer">
+                <div class="ask-timer-circle" style="--progress:${progress}">
+                  ${timeStr}
+                </div>
+                <div class="ask-timer-text">
+                  <div class="ask-timer-label">${escapeHtml(t.label)}</div>
+                  <div class="ask-timer-eta">${eta}</div>
+                </div>
+              </div>
+            `;
+        });
+
+        panel.innerHTML = html;
+    }
+
+    function startTimersUIUpdater() {
+        if (timersIntervalId) return;
+        timersIntervalId = setInterval(() => {
+            renderTimersUI();
+        }, 500);
+    }
+
+    function initTimers() {
+        askTimers = loadTimersFromStorage();
+
+        const now = Date.now();
+        const stillActive = [];
+        askTimers.forEach(t => {
+            if (t.endTime <= now) {
+                playTimerBeep();
+                sayWithAsk(`Час вийшов. ${t.label} готовий.`);
+            } else {
+                stillActive.push(t);
+                scheduleTimerTimeout(t);
+            }
+        });
+        askTimers = stillActive;
+        saveTimersToStorage();
+        renderTimersUI();
+        startTimersUIUpdater();
+    }
+
+    function createAskTimer(durationMs, label) {
+        const id = Date.now() + "_" + Math.random().toString(16).slice(2);
+        const endTime = Date.now() + durationMs;
+        const timer = { id, label, endTime, durationMs };
+
+        askTimers.push(timer);
+        saveTimersToStorage();
+        scheduleTimerTimeout(timer);
+        renderTimersUI();
+    }
+
+    function stopNearestTimer() {
+        if (!askTimers.length) {
+            sayWithAsk("Зараз жодного таймера немає.");
+            return;
+        }
+        askTimers.sort((a, b) => a.endTime - b.endTime);
+        const t = askTimers.shift();
+        saveTimersToStorage();
+        renderTimersUI();
+        sayWithAsk(`Зупиняю таймер ${t.label}.`);
+    }
+
+    function stopAllTimers() {
+        if (!askTimers.length) {
+            sayWithAsk("Зараз жодного таймера немає.");
+            return;
+        }
+        askTimers = [];
+        saveTimersToStorage();
+        renderTimersUI();
+        sayWithAsk("Зупиняю всі таймери.");
+    }
+
+    // ===== Голос: базові речі =====
+    function initAsk() {
+        if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+            console.warn("SpeechRecognition не підтримується цим браузером.");
+            return;
+        }
+
+        if ("speechSynthesis" in window) {
+            const pickVoice = () => {
+                const voices = window.speechSynthesis.getVoices();
+                // Підбираємо найприємніший доступний укр. голос
+                askVoice =
+                    voices.find(v => v.lang && v.lang.toLowerCase().startsWith("uk") && v.name.toLowerCase().includes("female")) ||
+                    voices.find(v => v.lang && v.lang.toLowerCase().startsWith("uk")) ||
+                    null;
+            };
+            pickVoice();
+            window.speechSynthesis.onvoiceschanged = pickVoice;
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = "uk-UA";
+        recognition.continuous = true;
+        recognition.interimResults = false;
+
+        recognition.onresult = function (event) {
+            const lastResult = event.results[event.results.length - 1];
+            const text = lastResult[0].transcript.trim().toLowerCase();
+            console.log("Ask heard:", text);
+            handleAskTranscript(text);
+        };
+
+        recognition.onend = function () {
+            try { recognition.start(); } catch (e) {}
+        };
+
+        recognition.onerror = function (event) {
+            console.error("Ask error:", event.error);
+        };
+
+        try { recognition.start(); } catch (e) {}
+    }
+
+    function resetAskInactivityTimer() {
+        if (!askAwake) return;
+        clearTimeout(askInactivityTimer);
+        askInactivityTimer = setTimeout(() => {
+            askAwake = false;
+        }, 30000);
+    }
+
+    function sayWithAsk(text) {
+        if (!("speechSynthesis" in window)) return;
+
+        console.log("ASK SAY:", text);
+
+        // чистимо чергу, щоб не було "залипань"
+        window.speechSynthesis.cancel();
+
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = "uk-UA";
+
+        // Трохи м'якший, повільніший голос
+        utter.rate = 0.9;   // 1.0 — стандарт
+        utter.pitch = 1.05; // трохи вище, щоб не бурчав
+        utter.volume = 1.0;
+
+        if (askVoice) utter.voice = askVoice;
+
+        window.speechSynthesis.speak(utter);
+    }
+
+    function stopReading() {
+        if (!("speechSynthesis" in window)) return;
+        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+            askManuallyStopped = true;
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    function speakRecipeFromPosition(fullText, dishKey, startPos) {
+        if (!("speechSynthesis" in window)) return;
+        if (!fullText) return;
+
+        const text = fullText;
+        const pos = Math.max(0, Math.min(startPos || 0, text.length));
+
+        window.speechSynthesis.cancel();
+        askCurrentDishKey = dishKey;
+        askManuallyStopped = false;
+
+        const utter = new SpeechSynthesisUtterance(text.slice(pos));
+        utter.lang = "uk-UA";
+        utter.rate = 0.9;
+        utter.pitch = 1.05;
+        utter.volume = 1.0;
+        if (askVoice) utter.voice = askVoice;
+
+        let lastChar = pos;
+
+        utter.onboundary = function (e) {
+            if (typeof e.charIndex === "number") {
+                lastChar = pos + e.charIndex;
+                saveReadingPosition(dishKey, lastChar);
+            }
+        };
+
+        utter.onend = function () {
+            askCurrentUtterance = null;
+            if (!askManuallyStopped) {
+                clearReadingPosition(dishKey);
+            }
+            askManuallyStopped = false;
+        };
+
+        askCurrentUtterance = utter;
+        window.speechSynthesis.speak(utter);
+    }
+
+    function handleAskTranscript(text) {
+        // Привітання — завжди будить і завжди каже "Слухаю."
+        if (
+            text.includes("привіт аск") ||
+            text.includes("привіт аско") ||
+            text.includes("привет аск") ||
+            text.includes("привіт") ||
+            text.includes("привет")
+        ) {
+            askAwake = true;
+            sayWithAsk("Слухаю.");
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Якщо не прокинувся — ігноруємо все інше
+        if (!askAwake) return;
+
+        // Стоп читання рецепта
+        if (
+            text.includes("стоп читання") ||
+            text.includes("стоп рецепт") ||
+            (text.includes("стоп") && text.includes("опис"))
+        ) {
+            stopReading();
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Проста команда "стоп" — теж зупиняє читання
+        if (text === "стоп" || text.includes("зупинись") || text.includes("зупинися")) {
+            stopReading();
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Зупинити таймер(и)
+        if (
+            text.includes("зупини таймер") ||
+            text.includes("останови таймер") ||
+            text.includes("зупини таймера") ||
+            text.includes("останови таймера")
+        ) {
+            stopNearestTimer();
+            resetAskInactivityTimer();
+            return;
+        }
+
+        if (
+            text.includes("зупини всі таймери") ||
+            text.includes("зупини все таймери") ||
+            text.includes("останови всі таймери") ||
+            text.includes("останови все таймеры")
+        ) {
+            stopAllTimers();
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Закрити рецепт / назад
+        if (text.includes("закрий") || text.includes("назад")) {
+            const recipeVisible = document.getElementById("recipe-menu").style.display === "block";
+            if (recipeVisible) {
+                goBackFromRecipe();
+                sayWithAsk("Закриваю рецепт.");
+                resetAskInactivityTimer();
+                return;
+            }
+        }
+
+        // Таймер (створити)
+        if (text.includes("таймер")) {
+            const ok = setAskTimerFromText(text);
+            if (ok) {
+                resetAskInactivityTimer();
+                return;
+            }
+        }
+
+        // Скільки часу
+        if (text.includes("скільки часу") || text.includes("сколько времени")) {
+            tellAskTimeLeft();
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Рецепт (поточний)
+        if (text.includes("рецепт") && (text.includes("зачитай") || text.includes("прочитай"))) {
+            const fromStart = text.includes("заново") || text.includes("спочатку");
+            readCurrentRecipe(fromStart);
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Опис Х
+        if (text.includes("опис") && (text.includes("прочитай") || text.includes("зачитай"))) {
+            const fromStart = text.includes("заново") || text.includes("спочатку");
+            readRecipeDescriptionByVoice(text, fromStart);
+            resetAskInactivityTimer();
+            return;
+        }
+
+        // Відкрий страву
+        if (text.includes("відкрий") || text.includes("открой")) {
+            openDishByVoice(text);
+            resetAskInactivityTimer();
+            return;
+        }
+    }
+
+    function setAskTimerFromText(text) {
+        const match = text.match(/(\d+)\s*(секунд|секунди|секунду|секунды|хвилин|хвилини|хвилину|минут|минуту)/);
+        if (!match) {
+            sayWithAsk("Я не почула тривалість таймера.");
+            return false;
+        }
+
+        const value = parseInt(match[1], 10);
+        const unit = match[2];
+        let ms = 0;
+
+        if (unit.startsWith("сек")) {
+            ms = value * 1000;
+        } else {
+            ms = value * 60 * 1000;
+        }
+
+        let label = "таймер";
+        const idx = text.indexOf("для ");
+        if (idx !== -1) {
+            label = text.substring(idx + 4).trim();
+            if (!label) label = "таймер";
+        }
+
+        createAskTimer(ms, label);
+        sayWithAsk(`Ставлю таймер на ${value} ${unit}.`);
+        return true;
+    }
+
+    function tellAskTimeLeft() {
+        if (!askTimers.length) {
+            sayWithAsk("Жодного таймера зараз немає.");
+            return;
+        }
+        const now = Date.now();
+        askTimers.sort((a, b) => a.endTime - b.endTime);
+        const nearest = askTimers[0];
+        let diff = Math.max(0, nearest.endTime - now);
+
+        const minutes = Math.floor(diff / (60 * 1000));
+        const seconds = Math.floor((diff % (60 * 1000)) / 1000);
+
+        let phrase = "";
+        if (minutes > 0) {
+            phrase += `${minutes} хвилин `;
+        }
+        phrase += `${seconds} секунд`;
+
+        sayWithAsk(`До завершення найближчого таймера залишилось ${phrase}.`);
+    }
+
+    function readCurrentRecipe(fromStart) {
+        const el = document.getElementById("recipe-display");
+        if (!el || !currentCat || !currentDish) {
+            sayWithAsk("Немає відкритого рецепта.");
+            return;
+        }
+        const fullText = el.textContent.trim();
+        if (!fullText) {
+            sayWithAsk("Цей рецепт поки порожній.");
+            return;
+        }
+
+        const textForReading = buildDescriptionWithAmounts(fullText);
+        const dishKey = makeDishKey(currentCat, currentDish);
+        const pos = fromStart ? 0 : getReadingPosition(dishKey);
+        if (fromStart) clearReadingPosition(dishKey);
+
+        speakRecipeFromPosition(textForReading, dishKey, pos);
+    }
+
+    function openDishByVoice(text) {
+        if (!currentUser) {
+            sayWithAsk("Спочатку увійдіть у свій акаунт.");
+            return;
+        }
+
+        let namePart = "";
+        const idxUk = text.indexOf("відкрий");
+        const idxRu = text.indexOf("открой");
+        let idx = -1;
+
+        if (idxUk !== -1) idx = idxUk;
+        else if (idxRu !== -1) idx = idxRu;
+
+        if (idx !== -1) {
+            namePart = text.substring(idx + (idxUk !== -1 ? "відкрий".length : "открой".length)).trim();
+        } else {
+            namePart = text.trim();
+        }
+
+        if (!namePart) {
+            sayWithAsk("Я не почула назву страви.");
+            return;
+        }
+
+        const norm = namePart.toLowerCase();
+
+        db.ref(`users/${currentUser.uid}/categories`)
+            .once("value")
+            .then((snap) => {
+                const cats = snap.val() || {};
+                let found = false;
+                for (const [catId, cat] of Object.entries(cats)) {
+                    const dishes = cat.dishes || {};
+                    for (const [dishId, dish] of Object.entries(dishes)) {
+                        if (!dish.name) continue;
+                        const dn = dish.name.toLowerCase();
+                        if (dn.includes(norm) || norm.includes(dn)) {
+                            openDish(catId, dishId);
+                            sayWithAsk(`Відкриваю страву ${dish.name}.`);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+                if (!found) {
+                    sayWithAsk("Я не знайшла таку страву у вашій кулінарній книзі.");
+                }
+            });
+    }
+
+    function readRecipeDescriptionByVoice(text, fromStart) {
+        if (!currentUser) {
+            sayWithAsk("Спочатку увійдіть у свій акаунт.");
+            return;
+        }
+
+        let namePart = "";
+        const idxOpis = text.indexOf("опис");
+        if (idxOpis !== -1) {
+            namePart = text.substring(idxOpis + "опис".length).trim();
+        } else {
+            namePart = text.trim();
+        }
+
+        if (!namePart) {
+            readCurrentRecipe(fromStart);
+            return;
+        }
+
+        const norm = namePart.toLowerCase();
+
+        db.ref(`users/${currentUser.uid}/categories`)
+            .once("value")
+            .then((snap) => {
+                const cats = snap.val() || {};
+                let dishName = null;
+                let fullText = null;
+                let foundCatId = null;
+                let foundDishId = null;
+
+                for (const [catId, cat] of Object.entries(cats)) {
+                    const dishes = cat.dishes || {};
+                    for (const [dishId, dish] of Object.entries(dishes)) {
+                        if (!dish.name) continue;
+                        const dn = dish.name.toLowerCase();
+                        if (dn.includes(norm) || norm.includes(dn)) {
+                            dishName = dish.name;
+                            fullText = dish.description || "";
+                            foundCatId = catId;
+                            foundDishId = dishId;
+                            break;
+                        }
+                    }
+                    if (dishName !== null) break;
+                }
+
+                if (dishName === null) {
+                    sayWithAsk("Я не знайшла таку страву у вашій кулінарній книзі.");
+                    return;
+                }
+
+                if (!fullText.trim()) {
+                    sayWithAsk(`Для страви ${dishName} поки немає опису.`);
+                    return;
+                }
+
+                openDish(foundCatId, foundDishId);
+
+                const textForReading = buildDescriptionWithAmounts(fullText);
+                const dishKey = makeDishKey(foundCatId, foundDishId);
+                const pos = fromStart ? 0 : getReadingPosition(dishKey);
+                if (fromStart) clearReadingPosition(dishKey);
+
+                speakRecipeFromPosition(textForReading, dishKey, pos);
+            });
+    }
+
+    // ==================== Ініціалізація ====================
     document.addEventListener("DOMContentLoaded", () => {
         showMainMenu();
+        initAsk();
+        initTimers();
     });
 </script>
 </body>
