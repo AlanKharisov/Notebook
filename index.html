@@ -312,6 +312,13 @@
     <button onclick="showAddMenu()">Додати категорію</button>
 </div>
 
+<!-- Кнопка для увімкнення/вимкнення голосу Аска -->
+<div class="main" style="padding-top: 0.5rem;">
+    <button class="button secondary" id="ask-voice-btn" onclick="toggleAskVoice()">
+        Увімкнути голос Аска
+    </button>
+</div>
+
 <!-- Панель таймерів Аска -->
 <div class="ask-timers-panel" id="ask-timers-panel"></div>
 
@@ -708,6 +715,10 @@
     let recognition = null;
     let askVoice = null;
 
+    // нові прапорці для голосу
+    let askVoiceEnabled = false;
+    let askAlwaysAwake = false;
+
     // Таймери
     let askTimers = []; // {id,label,endTime,durationMs}
     let timersIntervalId = null;
@@ -991,7 +1002,8 @@
 
     // ===== Голос: базові речі =====
     function initAsk() {
-        if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+        const hasRecognition = ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
+        if (!hasRecognition) {
             console.warn("SpeechRecognition не підтримується цим браузером.");
             return;
         }
@@ -999,7 +1011,6 @@
         if ("speechSynthesis" in window) {
             const pickVoice = () => {
                 const voices = window.speechSynthesis.getVoices();
-                // Підбираємо найприємніший доступний укр. голос
                 askVoice =
                     voices.find(v => v.lang && v.lang.toLowerCase().startsWith("uk") && v.name.toLowerCase().includes("female")) ||
                     voices.find(v => v.lang && v.lang.toLowerCase().startsWith("uk")) ||
@@ -1035,6 +1046,12 @@
 
     function resetAskInactivityTimer() {
         if (!askAwake) return;
+
+        // Якщо голос увімкнено в режимі "завжди прокинутого" — не засинаємо
+        if (askAlwaysAwake) {
+            return;
+        }
+
         clearTimeout(askInactivityTimer);
         askInactivityTimer = setTimeout(() => {
             askAwake = false;
@@ -1043,18 +1060,20 @@
 
     function sayWithAsk(text) {
         if (!("speechSynthesis" in window)) return;
+        if (!askVoiceEnabled) {
+            console.log("ASK (mute):", text);
+            return;
+        }
 
         console.log("ASK SAY:", text);
 
-        // чистимо чергу, щоб не було "залипань"
-        window.speechSynthesis.cancel();
+        try { window.speechSynthesis.cancel(); } catch (e) {}
 
         const utter = new SpeechSynthesisUtterance(text);
         utter.lang = "uk-UA";
 
-        // Трохи м'якший, повільніший голос
-        utter.rate = 0.9;   // 1.0 — стандарт
-        utter.pitch = 1.05; // трохи вище, щоб не бурчав
+        utter.rate = 0.9;   // повільніше
+        utter.pitch = 1.05; // трохи м'якше
         utter.volume = 1.0;
 
         if (askVoice) utter.voice = askVoice;
@@ -1077,7 +1096,7 @@
         const text = fullText;
         const pos = Math.max(0, Math.min(startPos || 0, text.length));
 
-        window.speechSynthesis.cancel();
+        try { window.speechSynthesis.cancel(); } catch (e) {}
         askCurrentDishKey = dishKey;
         askManuallyStopped = false;
 
@@ -1109,8 +1128,25 @@
         window.speechSynthesis.speak(utter);
     }
 
+    // Кнопка вкл/викл голосу Аска
+    function toggleAskVoice() {
+        const btn = document.getElementById("ask-voice-btn");
+        askVoiceEnabled = !askVoiceEnabled;
+        askAlwaysAwake = askVoiceEnabled;
+
+        if (askVoiceEnabled) {
+            btn.textContent = "Вимкнути голос Аска";
+            askAwake = true;
+            sayWithAsk("Голос Аска увімкнено. Я слухаю.");
+        } else {
+            btn.textContent = "Увімкнути голос Аска";
+            askAwake = false;
+            try { window.speechSynthesis.cancel(); } catch (e) {}
+        }
+    }
+
     function handleAskTranscript(text) {
-        // Привітання — завжди будить і завжди каже "Слухаю."
+        // Привітання — завжди будить і (якщо голос увімкнений) каже "Слухаю."
         if (
             text.includes("привіт аск") ||
             text.includes("привіт аско") ||
