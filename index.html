@@ -1,398 +1,1464 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" id="html-lang">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Кулінарна книга</title>
+    <title id="page-title">Кулінарна книга</title>
+    
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <!-- Иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root{
-            --grass-1: #35da0d;
-            --grass-2: #1c6204;
+    :root {
+        --primary: #35da0d;
+        --secondary: #1c6204;
+        --primary-light: #57b833;
+        --accent: #49b028;
+        --text: #0f172a;
+        --muted: #64748b;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e5e7eb;
+        --shadow: 0 8px 22px rgba(2, 6, 23, 0.06);
+        --radius: 14px;
+        --transition: all .22s ease;
+        
+        /* Настройки размеров */
+        --base-font-size: 18px;
+        --h1-size: 1.55rem;
+        --h2-size: 1.25rem;
+        --h3-size: 1.1rem;
+        --p-size: 1rem;
+        --small-size: .92rem;
+        --button-font-size: 1rem;
+        --button-padding: .58rem .9rem;
+        
+        /* Настройки пользователя */
+        --header-color: var(--primary);
+        --edit-btn-color: var(--accent);
+        --back-btn-color: var(--primary);
+    }
 
-            --primary-color: var(--grass-1);
-            --secondary-color: var(--grass-2);
-            --primary-light: #57b833;
-            --accent-color: #49b028;
+    html {
+        font-size: var(--base-font-size);
+    }
 
-            --text-color: #0f172a;
-            --light-text: #ffffff;
-            --background: #f8fafc;
-            --card-bg: #ffffff;
-            --border: #e5e7eb;
+    * {
+        box-sizing: border-box;
+    }
 
-            --shadow: 0 8px 22px rgba(2, 6, 23, 0.06);
-            --radius: 14px;
-            --transition: all .25s ease;
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 
-            --base-font: 18px;
-            --h1: 1.65rem;
-            --h3: 1.3rem;
-            --text: 1rem;
-            --button: 1rem;
-            --small: .95rem;
+    /* ===== Header ===== */
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--header-color);
+        box-shadow: var(--shadow);
+        border-bottom: 1px solid rgba(255, 255, 255, .10);
+    }
+
+    .header__row {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: .85rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+    }
+
+    .header__left,
+    .header__right {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        flex: 0 0 auto;
+    }
+
+    .header__title {
+        flex: 1;
+        text-align: center;
+        margin: 0;
+        font-size: var(--h1-size);
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: .2px;
+        user-select: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn {
+        appearance: none;
+        border: 1px solid rgba(255, 255, 255, .22);
+        background: rgba(255, 255, 255, .14);
+        color: #fff;
+        padding: var(--button-padding);
+        border-radius: 999px;
+        font-weight: 800;
+        font-size: var(--button-font-size);
+        cursor: pointer;
+        transition: var(--transition);
+        backdrop-filter: saturate(120%) blur(2px);
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        white-space: nowrap;
+    }
+
+    .btn:hover {
+        background: rgba(255, 255, 255, .22);
+        transform: translateY(-1px);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn:focus-visible {
+        outline: 3px solid rgba(73, 176, 40, .35);
+        outline-offset: 2px;
+    }
+
+    /* ===== Search bar ===== */
+    .search-wrap {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 0 1rem 1rem;
+    }
+
+    .search {
+        display: flex;
+        gap: .6rem;
+        background: rgba(255, 255, 255, .18);
+        border: 1px solid rgba(255, 255, 255, .22);
+        border-radius: 999px;
+        padding: .5rem .55rem;
+        box-shadow: 0 10px 22px rgba(2, 6, 23, .08);
+    }
+
+    .search__input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: #fff;
+        font-size: var(--p-size);
+        font-weight: 650;
+        padding: .25rem .4rem;
+    }
+
+    .search__input::placeholder {
+        color: rgba(255, 255, 255, .85);
+        font-weight: 650;
+    }
+
+    .search__chip {
+        border: 1px solid rgba(255, 255, 255, .24);
+        background: rgba(255, 255, 255, .14);
+        color: #fff;
+        border-radius: 999px;
+        padding: .42rem .7rem;
+        font-weight: 800;
+        font-size: var(--small-size);
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+
+    .search__chip:hover {
+        background: rgba(255, 255, 255, .22);
+        transform: translateY(-1px);
+    }
+
+    /* ===== Layout ===== */
+    .main {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 1rem;
+        padding-bottom: 2rem;
+    }
+
+    .screen {
+        display: none;
+    }
+
+    .screen.is-active {
+        display: block;
+    }
+
+    .section-title {
+        margin: .35rem 0 1rem;
+        font-size: var(--h2-size);
+        font-weight: 900;
+        color: var(--secondary);
+    }
+
+    /* ===== Cards ===== */
+    .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    /* ===== Categories ===== */
+    .category {
+        margin-bottom: 1rem;
+        transition: var(--transition);
+    }
+
+    .category:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(2, 6, 23, .09);
+    }
+
+    .category__head {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .85rem 1rem;
+        background: var(--secondary);
+        color: #fff;
+    }
+
+    .category__toggle {
+        flex: 1;
+        border: none;
+        background: none;
+        color: inherit;
+        text-align: left;
+        font-size: var(--p-size);
+        font-weight: 900;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    .category__meta {
+        font-size: var(--small-size);
+        opacity: .95;
+        font-weight: 750;
+        white-space: nowrap;
+    }
+
+    .category__actions {
+        display: flex;
+        gap: .55rem;
+        flex: 0 0 auto;
+    }
+
+    .icon-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, .18);
+        background: rgba(255, 255, 255, .12);
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        color: #fff;
+        font-size: var(--small-size);
+    }
+
+    .icon-btn:hover {
+        background: rgba(255, 255, 255, .22);
+        transform: translateY(-1px);
+    }
+
+    .icon-btn:active {
+        transform: translateY(0);
+    }
+
+    .category__body {
+        padding: .9rem 1rem 1rem;
+    }
+
+    .add-dish-btn-container {
+        margin-bottom: .6rem;
+        display: none;
+    }
+
+    .add-dish-btn-container.visible {
+        display: block;
+    }
+
+    .btn-long {
+        appearance: none;
+        border: none;
+        background: linear-gradient(135deg, var(--secondary), var(--accent));
+        color: #fff;
+        padding: .85rem 1rem;
+        border-radius: 12px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 10px 22px rgba(73, 176, 40, .18);
+        white-space: nowrap;
+        width: 100%;
+        text-align: center;
+        font-size: var(--button-font-size);
+    }
+
+    .btn-long:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 26px rgba(73, 176, 40, .24);
+    }
+
+    .btn-long:active {
+        transform: translateY(0);
+    }
+
+    .dishes {
+        display: none;
+    }
+
+    .dishes.is-open {
+        display: block;
+    }
+
+    .dish {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .7rem;
+        padding: .85rem .2rem;
+        border-bottom: 1px solid var(--border);
+        transition: var(--transition);
+        border-radius: 10px;
+    }
+
+    .dish:last-child {
+        border-bottom: none;
+    }
+
+    .dish:hover {
+        background: #f1fbf3;
+    }
+
+    .dish__main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .dish__title {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-size: var(--p-size);
+        font-weight: 900;
+        margin: 0;
+        color: var(--text);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .dish__title:hover {
+        color: var(--primary);
+    }
+
+    .dish__sub {
+        margin: .12rem 0 0;
+        color: var(--muted);
+        font-size: var(--small-size);
+        font-weight: 650;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .2rem .55rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        color: var(--text);
+        font-size: .85rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .tag.star {
+        background: #fff7ed;
+        border-color: #fed7aa;
+    }
+
+    .dish__actions {
+        display: flex;
+        gap: .5rem;
+        flex: 0 0 auto;
+    }
+
+    .icon-mini {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text);
+        font-weight: 900;
+        font-size: var(--small-size);
+    }
+
+    .icon-mini:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 18px rgba(2, 6, 23, .08);
+    }
+
+    .icon-mini:active {
+        transform: translateY(0);
+    }
+
+    /* ===== Search Results ===== */
+    .search-results {
+        display: grid;
+        gap: .9rem;
+    }
+
+    .result {
+        padding: .9rem 1rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--card);
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .result:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 26px rgba(2, 6, 23, .09);
+    }
+
+    .result__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+    }
+
+    .result__title {
+        margin: 0;
+        font-size: 1.05rem;
+        font-weight: 950;
+        color: var(--text);
+    }
+
+    .result__type {
+        font-size: .85rem;
+        font-weight: 900;
+        color: var(--secondary);
+        background: #ecfccb;
+        border: 1px solid #d9f99d;
+        padding: .18rem .5rem;
+        border-radius: 999px;
+        white-space: nowrap;
+    }
+
+    .result__desc {
+        margin: .35rem 0 0;
+        color: var(--muted);
+        font-size: .95rem;
+        font-weight: 650;
+    }
+
+    .result__actions {
+        margin-top: .65rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+    }
+
+    .btn-outline {
+        appearance: none;
+        border: 2px solid var(--primary);
+        background: transparent;
+        color: var(--primary);
+        padding: .55rem .9rem;
+        border-radius: 999px;
+        font-weight: 900;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: var(--button-font-size);
+    }
+
+    .btn-outline:hover {
+        background: var(--primary);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline:active {
+        transform: translateY(0);
+    }
+
+    /* ===== Recipe View ===== */
+    .back-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-bottom: .9rem;
+    }
+
+    .btn-back {
+        appearance: none;
+        border: 2px solid var(--back-btn-color);
+        background: transparent;
+        color: var(--back-btn-color);
+        padding: .55rem .9rem;
+        border-radius: 999px;
+        font-weight: 950;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: var(--button-font-size);
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        white-space: nowrap;
+    }
+
+    .btn-back:hover {
+        background: var(--back-btn-color);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+    .recipe {
+        padding: 1rem;
+    }
+
+    .recipe__title {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 950;
+        color: var(--secondary);
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        flex-wrap: wrap;
+    }
+
+    .recipe__content {
+        margin-top: .8rem;
+        padding: .9rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: #fff;
+        font-size: var(--p-size);
+        line-height: 1.85;
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    .recipe__content.edit-mode {
+        background: #f6fdf4;
+        border: 2px solid var(--primary-light);
+        padding: 1.1rem;
+        min-height: 280px;
+        border-radius: var(--radius);
+        outline: none;
+        cursor: text;
+    }
+
+    .recipe__tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .9rem;
+    }
+
+    .btn-wide {
+        appearance: none;
+        border: none;
+        background: var(--edit-btn-color);
+        color: #fff;
+        padding: .85rem 1rem;
+        border-radius: 12px;
+        font-weight: 950;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        flex: 1 1 220px;
+        text-align: center;
+        font-size: var(--button-font-size);
+    }
+
+    .btn-wide:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+    }
+
+    /* Video block */
+    .video {
+        margin-top: 1rem;
+        padding: .9rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: #f6fdf4;
+    }
+
+    .video__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-bottom: .6rem;
+    }
+
+    .video__title {
+        margin: 0;
+        font-size: var(--p-size);
+        font-weight: 950;
+        color: var(--secondary);
+    }
+
+    .video__link {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        flex-wrap: wrap;
+        color: var(--text);
+        font-weight: 800;
+        font-size: var(--small-size);
+    }
+
+    .video__link a {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 950;
+        border-bottom: 1px dashed rgba(28, 98, 4, .45);
+    }
+
+    .video__link a:hover {
+        border-bottom-style: solid;
+    }
+
+    .video__frame {
+        margin-top: .75rem;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(73, 176, 40, .25);
+        background: #000;
+        aspect-ratio: 16 / 9;
+    }
+
+    .video__frame iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+    }
+
+    .video__note {
+        margin-top: .55rem;
+        color: var(--muted);
+        font-size: var(--small-size);
+        font-weight: 650;
+    }
+
+    /* Social Links block */
+    .social-links {
+        margin-top: 1rem;
+        padding: .9rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: #f6fdf4;
+    }
+
+    .social-links__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-bottom: .6rem;
+    }
+
+    .social-links__title {
+        margin: 0;
+        font-size: var(--p-size);
+        font-weight: 950;
+        color: var(--secondary);
+    }
+
+    .social-links__list {
+        display: flex;
+        flex-direction: column;
+        gap: .8rem;
+    }
+
+    .social-link-item {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        padding: .7rem;
+        background: white;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .social-icon.youtube { background: #FF0000; }
+    .social-icon.tiktok { background: #000000; }
+    .social-icon.facebook { background: #1877F2; }
+    .social-icon.instagram { background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D); }
+    .social-icon.twitter { background: #1DA1F2; }
+    .social-icon.other { background: var(--primary); }
+
+    .social-link-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .social-link-name {
+        margin: 0;
+        font-weight: 700;
+        color: var(--text);
+        font-size: var(--p-size);
+    }
+
+    .social-link-url {
+        margin: .2rem 0 0;
+        color: var(--muted);
+        font-size: var(--small-size);
+        word-break: break-all;
+    }
+
+    .social-link-actions {
+        display: flex;
+        gap: .4rem;
+    }
+
+    .social-action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text);
+        transition: var(--transition);
+    }
+
+    .social-action-btn:hover {
+        background: #f1fbf3;
+        transform: translateY(-1px);
+    }
+
+    /* Empty / helper */
+    .empty {
+        padding: 1rem;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+        background: #fff;
+        color: var(--muted);
+        font-weight: 700;
+        font-size: var(--p-size);
+    }
+
+    /* ===== Settings Sidebar ===== */
+    .settings-btn {
+        position: fixed;
+        left: 1rem;
+        bottom: 1rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 99;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+
+    .settings-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .settings-sidebar {
+        position: fixed;
+        left: -320px;
+        top: 0;
+        width: 300px;
+        height: 100%;
+        background: var(--card);
+        box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+        z-index: 100;
+        transition: left 0.3s ease;
+        padding: 1.5rem;
+        overflow-y: auto;
+    }
+
+    .settings-sidebar.open {
+        left: 0;
+    }
+
+    .settings-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 99;
+        display: none;
+    }
+
+    .settings-overlay.open {
+        display: block;
+    }
+
+    .settings-title {
+        margin-top: 0;
+        color: var(--secondary);
+        font-size: var(--h2-size);
+    }
+
+    .settings-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .settings-section-title {
+        font-size: var(--h3-size);
+        color: var(--text);
+        margin: 0 0 .8rem 0;
+    }
+
+    .color-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .6rem;
+        margin-bottom: 1rem;
+    }
+
+    .color-option {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: .8rem;
+    }
+
+    .color-option:hover {
+        transform: scale(1.05);
+    }
+
+    .color-option.selected {
+        border-color: var(--text);
+        transform: scale(1.05);
+    }
+
+    .size-control {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin-bottom: .8rem;
+    }
+
+    .size-label {
+        flex: 1;
+        font-weight: 600;
+        color: var(--text);
+        font-size: var(--small-size);
+    }
+
+    .size-value {
+        width: 40px;
+        text-align: center;
+        font-weight: 700;
+        color: var(--secondary);
+    }
+
+    .size-slider {
+        flex: 2;
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+        outline: none;
+    }
+
+    .size-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+    }
+
+    .language-selector {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .5rem;
+        margin-bottom: 1rem;
+    }
+
+    .lang-btn {
+        padding: .6rem .4rem;
+        border: 1px solid var(--border);
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        text-align: center;
+    }
+
+    .lang-btn:hover {
+        background: #f1fbf3;
+    }
+
+    .lang-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    /* ===== Auth Forms ===== */
+    .auth-form {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .55);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(3px);
+    }
+
+    .auth-form .form-container {
+        background: var(--card);
+        padding: 1.4rem;
+        border-radius: var(--radius);
+        box-shadow: 0 16px 36px rgba(2, 6, 23, .16);
+        width: 92%;
+        max-width: 440px;
+        border: 1px solid var(--border);
+        animation: fadeInUp .35s ease-out;
+    }
+
+    .auth-form h3 {
+        text-align: center;
+        margin: 0 0 1rem;
+        color: var(--secondary);
+        font-weight: 800;
+        font-size: var(--h3-size);
+    }
+
+    .auth-form .error-message {
+        color: #dc2626;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-size: var(--small-size);
+    }
+
+    .auth-form .switch-form {
+        background: none;
+        border: none;
+        color: var(--primary);
+        cursor: pointer;
+        font-size: var(--small-size);
+        font-weight: 800;
+        display: block;
+        margin: .6rem auto 0;
+        text-align: center;
+        width: 100%;
+        padding: .4rem 0;
+        transition: var(--transition);
+    }
+
+    .auth-form .switch-form:hover {
+        color: var(--primary-light);
+        text-decoration: underline;
+    }
+
+    @media (max-width: 780px) {
+        .header__row {
+            flex-wrap: wrap;
         }
 
-        html{ font-size: var(--base-font); }
-        *, *::before, *::after{ box-sizing: border-box; }
-        body{
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            margin:0; padding:0;
-            background: var(--background);
-            color: var(--text-color);
-            line-height: 1.65;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        .header__title {
+            order: 2;
+            width: 100%;
+            text-align: center;
         }
 
-        .header{
-            display:flex; justify-content: space-between; align-items:center;
-            background: var(--primary-color);
-            padding: .9rem 1.2rem;
-            position: sticky; top:0; z-index:100;
-            box-shadow: var(--shadow);
-            border-bottom: 1px solid rgba(255,255,255,.08);
-        }
-        .header h1{
-            flex:1; text-align:center; margin:0;
-            color:var(--light-text); font-size: var(--h1); font-weight:700;
-        }
-        .header button{
-            appearance:none; -webkit-appearance:none;
-            background: rgba(255,255,255,.12);
-            border: 1px solid rgba(255,255,255,.22);
-            color: var(--light-text);
-            padding: .6rem 1rem;
-            border-radius: 999px;
-            font-size: var(--button); font-weight:700;
-            cursor:pointer; transition: var(--transition);
-            backdrop-filter: saturate(120%) blur(2px);
-        }
-        .header button:hover{ background: rgba(255,255,255,.2); transform: translateY(-1px); }
-        .header button:focus-visible{
-            outline: 3px solid rgba(73,176,40,.35);
-            outline-offset: 2px;
+        .header__left {
+            order: 1;
         }
 
-        .main{ padding: 1.25rem; max-width: 920px; margin: 0 auto; }
-        h3{ color: var(--secondary-color); margin: 0 0 1.1rem; font-size: var(--h3); font-weight:800; }
-
-        .category{
-            margin-bottom: 1rem; background: var(--card-bg);
-            border: 1px solid var(--border); border-radius: var(--radius);
-            box-shadow: var(--shadow); transition: var(--transition); overflow:hidden;
-        }
-        .category:hover{ transform: translateY(-2px); box-shadow: 0 10px 26px rgba(2,6,23,.08); }
-        .category-header{
-            display:flex; align-items:center; gap:.75rem;
-            padding: .85rem 1rem;
-            background: var(--secondary-color);
-            color: var(--light-text);
-        }
-        .category button{
-            border:none; background:none; color:inherit;
-            font-size: var(--text); font-weight:700; text-align:left; flex:1; cursor:pointer;
-        }
-        .category-actions{ display:flex; gap:.7rem; }
-        .category-actions img{
-            width:22px; height:22px; cursor:pointer; transition: var(--transition);
-            filter: brightness(0) invert(1);
-        }
-        .category-actions img:hover{ transform: scale(1.08); }
-
-        .dishes{ display:none; padding: 0 1rem 1rem; background: var(--card-bg); }
-        .dish{
-            display:flex; align-items:center; gap:.75rem;
-            padding: .8rem 0; border-bottom:1px solid var(--border);
-            transition: var(--transition);
-        }
-        .dish:last-child{ border-bottom:none; }
-        .dish:hover{ background: #f1fbf3; }
-        .dish button{
-            flex:1; border:none; background:none; text-align:left; cursor:pointer;
-            font-size: var(--text); font-weight:600; color: var(--text-color);
-            padding:.35rem 0; transition: var(--transition);
-        }
-        .dish button:hover{ color: var(--primary-color); padding-left: 4px; }
-        .dish-actions{ display:flex; gap:.6rem; }
-        .dish-actions img{ width:22px; height:22px; cursor:pointer; transition: var(--transition); }
-        .dish-actions img:hover{ transform: scale(1.08); }
-
-        .button{
-            appearance:none; -webkit-appearance:none;
-            background: var(--primary-color);
-            color: var(--light-text);
-            border: 1px solid rgba(73,176,40,.18);
-            padding: .85rem 1.2rem;
-            border-radius: var(--radius);
-            cursor:pointer; transition: var(--transition);
-            font-size: var(--button); font-weight:800; letter-spacing:.2px;
-            width:100%; margin:.85rem 0;
-            box-shadow: var(--shadow);
-        }
-        .button:hover{ background: var(--primary-light); transform: translateY(-1px); }
-        .button:active{ transform: translateY(0); }
-        .button:focus-visible{
-            outline: 3px solid rgba(73,176,40,.35);
-            outline-offset: 2px;
+        .header__right {
+            order: 3;
+            width: 100%;
+            justify-content: center;
         }
 
-        .button.secondary{
-            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-            border: 1px solid rgba(73,176,40,.2);
-            color: var(--light-text);
-            padding: .85rem 1.1rem;
-            border-radius: var(--radius);
-            font-weight:800;
-            box-shadow: 0 8px 20px rgba(73,176,40,.18);
-            width:auto;
-        }
-        .button.secondary:hover{
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-light));
-            transform: translateY(-1px);
-            box-shadow: 0 12px 24px rgba(73,176,40,.24);
+        .search-wrap {
+            padding-bottom: .85rem;
         }
 
-        .button.back{
-            background: none;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-            padding: .5rem 1rem;
-            border-radius: 999px;
-            font-size: var(--small); font-weight:800;
-            width:auto; box-shadow:none;
-        }
-        .button.back:hover{ background: var(--primary-color); color: var(--light-text); transform: translateY(-1px); }
-        .button.back:focus-visible{
-            outline: 3px solid rgba(73,176,40,.35);
-            outline-offset: 2px;
+        .settings-btn {
+            left: .5rem;
+            bottom: .5rem;
         }
 
-        .input-group{ margin-bottom: 1.2rem; }
-        .input-group input,
-        .auth-form input{
-            width:100%; padding: .8rem 1rem;
-            border:1px solid var(--border); border-radius: var(--radius);
-            background:#fff; color: var(--text-color);
-            font-size: var(--text); transition: var(--transition);
+        .settings-sidebar {
+            width: 85%;
+            left: -85%;
         }
-        .input-group input:focus,
-        .auth-form input:focus{
-            outline:none; border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(73,176,40,.22);
+        
+        .color-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
+    }
 
-        .recipe-content{
-            margin: 1.2rem 0; padding:0;
-            font-size: 1.125rem; line-height:1.8;
-            color: var(--text-color);
-            white-space: pre-wrap;
-            word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;
-            max-width:100%; overflow-x:auto;
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
         }
-        .recipe-content.edit-mode{
-            background:#f6fdf4;
-            border:1px solid var(--primary-light);
-            padding: 1.1rem; min-height: 280px;
-            border-radius: var(--radius); outline:none; cursor:text;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .recipe-actions{ display:flex; gap:.8rem; margin-top:.6rem; }
-        .recipe-actions button{ width:auto; margin:0; }
+    }
 
-        .auth-form{
-            position:fixed; inset:0;
-            background: rgba(0,0,0,.55);
-            display:flex; justify-content:center; align-items:center;
-            z-index:1000; backdrop-filter: blur(3px);
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
         }
-        .auth-form .form-container{
-            background: var(--card-bg);
-            padding: 1.4rem; border-radius: var(--radius);
-            box-shadow: 0 16px 36px rgba(2,6,23,.16);
-            width:92%; max-width: 440px;
-            border: 1px solid var(--border);
-            animation: fadeInUp .35s ease-out;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-        .auth-form h3{
-            text-align:center; margin: 0 0 1rem;
-            color: var(--secondary-color); font-weight:800; font-size: var(--h3);
-        }
-        .auth-form .error-message{
-            color:#dc2626; margin-bottom: 1rem; text-align:center; font-size: .95rem;
-        }
-        .auth-form .switch-form{
-            background:none; border:none; color: var(--primary-color);
-            cursor:pointer; font-size: var(--small); font-weight:800;
-            display:block; margin:.6rem auto 0; text-align:center; width:100%;
-            padding:.4rem 0; transition: var(--transition);
-        }
-        .auth-form .switch-form:hover{ color: var(--primary-light); text-decoration: underline; }
+    }
 
-        @media (max-width: 768px){
-            .header{ padding: .7rem .9rem; flex-wrap: wrap; }
-            .header button{ margin:.25rem; font-size: .95rem; }
-            .main{ padding: .95rem; }
-            .category-header{ padding:.75rem .9rem; }
-        }
-
-        @keyframes fadeIn{
-            from{ opacity:0; transform: translateY(8px); }
-            to{ opacity:1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp{
-            from{ opacity:0; transform: translateY(16px); }
-            to{ opacity:1; transform: translateY(0); }
-        }
-        .category, .dish, .recipe-content, .button{ animation: fadeIn .35s ease-out; }
-
-        /* ===== Панель таймерів Аска ===== */
-        .ask-timers-panel{
-            position: fixed;
-            right: 1rem;
-            bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: .6rem;
-            z-index: 200;
-        }
-        .ask-timer{
-            display:flex;
-            align-items:center;
-            gap:.55rem;
-            background: var(--card-bg);
-            border-radius: 999px;
-            padding: .35rem .8rem .35rem .4rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            font-size: .85rem;
-        }
-        .ask-timer-circle{
-            --progress: 0;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: conic-gradient(
-                    var(--primary-color) calc(var(--progress) * 360deg),
-                    #e5e7eb 0deg
-            );
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size: .7rem;
-            font-weight:700;
-            color: var(--text-color);
-        }
-        .ask-timer-text{
-            display:flex;
-            flex-direction:column;
-            gap:2px;
-        }
-        .ask-timer-label{
-            font-weight:600;
-        }
-        .ask-timer-eta{
-            font-size:.75rem;
-            color:#6b7280;
-        }
-
-        @media (max-width: 768px){
-            .ask-timers-panel{
-                right:.6rem;
-                bottom:.6rem;
-            }
-        }
+    .category, .dish, .recipe__content, .btn-wide {
+        animation: fadeIn .35s ease-out;
+    }
+    
+    /* Link preview styles */
+    .link-preview-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+    }
+    
+    .link-preview-content {
+        background: white;
+        border-radius: var(--radius);
+        width: 90%;
+        max-width: 800px;
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .link-preview-header {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .link-preview-iframe {
+        flex: 1;
+        border: none;
+        width: 100%;
+    }
+    
+    .copy-link-btn {
+        position: relative;
+    }
+    
+    .copy-notification {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: white;
+        padding: .3rem .6rem;
+        border-radius: 6px;
+        font-size: .8rem;
+        white-space: nowrap;
+    }
     </style>
 </head>
 <body>
-<div class="header">
-    <button id="authButton" onclick="toggleAuthMenu()">Увійти</button>
-    <button onclick="showAddMenu()">Додати категорію</button>
-</div>
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="header__row">
+            <div class="header__left">
+                <button class="btn" id="authButton" type="button">
+                    <i class="fas fa-user"></i>
+                    <span id="authText">Увійти</span>
+                </button>
+            </div>
 
-<!-- Кнопка для увімкнення/вимкнення голосу Аска -->
-<div class="main" style="padding-top: 0.5rem;">
-    <button class="button secondary" id="ask-voice-btn" onclick="toggleAskVoice()">
-        Увімкнути голос Аска
+            <h1 class="header__title" id="appTitle">Кулінарна книга</h1>
+
+            <div class="header__right">
+                <button class="btn" type="button" id="addCategoryBtn">
+                    <i class="fas fa-plus"></i>
+                    <span id="addCategoryText">Додати категорію</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== SEARCH ===== -->
+        <div class="search-wrap">
+            <div class="search" role="search">
+                <input
+                    class="search__input"
+                    id="global-search"
+                    type="search"
+                    placeholder="Пошук: категорія або страва… (наприклад: борщ, салат, улюблене)"
+                    autocomplete="off"
+                />
+                <button class="search__chip" type="button" aria-label="Очистити пошук" id="clearSearchBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== Кнопка настроек ===== -->
+    <button class="settings-btn" id="settingsBtn">
+        <i class="fas fa-cog"></i>
     </button>
-</div>
-
-<!-- Панель таймерів Аска -->
-<div class="ask-timers-panel" id="ask-timers-panel"></div>
-
-<div id="main-menu" class="main">
-    <h3>Категорії страв</h3>
-    <div id="categories"></div>
-</div>
-
-<div id="add-menu" class="main" style="display: none">
-    <button class="button back" onclick="goBackFromRecipe()">⬅ Назад</button>
-    <h3>Додати категорію</h3>
-    <div class="input-group">
-        <input
-                type="text"
-                id="new-category-name"
-                placeholder="Назва категорії"
-        />
-        <button class="button" onclick="addNewCategory()">Додати</button>
-    </div>
-</div>
-
-<div id="recipe-menu" class="main" style="display: none">
-    <button class="button back" onclick="goBackFromRecipe()">⬅ Назад</button>
-    <h3 id="recipe-title">Назва страви</h3>
-    <div
-            class="recipe-content"
-            id="recipe-display"
-            contenteditable="false"
-    ></div>
-    <div class="recipe-actions" id="recipe-actions" style="display: none">
-        <button class="button" onclick="saveRecipe()">Зберегти</button>
-        <button class="button secondary" onclick="cancelEdit()">
-            Скасувати
+    
+    <!-- ===== Сайдбар настроек ===== -->
+    <div class="settings-overlay" id="settingsOverlay"></div>
+    <div class="settings-sidebar" id="settingsSidebar">
+        <h2 class="settings-title" id="settingsTitle">Налаштування</h2>
+        
+        <div class="settings-section">
+            <h3 class="settings-section-title" id="colorThemeTitle">Кольорова тема</h3>
+            <div class="color-grid">
+                <div class="color-option selected" data-color="#35da0d" style="background: #35da0d;" title="Зелений">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="color-option" data-color="#3b82f6" style="background: #3b82f6;" title="Синій">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="color-option" data-color="#8b5cf6" style="background: #8b5cf6;" title="Фіолетовий">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <div class="color-option" data-color="#ef4444" style="background: #ef4444;" title="Червоний">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="color-option" data-color="#f97316" style="background: #f97316;" title="Помаранчевий">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="color-option" data-color="#0ea5e9" style="background: #0ea5e9;" title="Блакитний">
+                    <i class="fas fa-water"></i>
+                </div>
+                <div class="color-option" data-color="#10b981" style="background: #10b981;" title="Смарагдовий">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="color-option" data-color="#f59e0b" style="background: #f59e0b;" title="Жовтий">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="color-option" data-color="#ec4899" style="background: #ec4899;" title="Рожевий">
+                    <i class="fas fa-heart"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h3 class="settings-section-title" id="textSizeTitle">Розмір тексту</h3>
+            <div class="size-control">
+                <span class="size-label" id="baseFontLabel">Базовий розмір:</span>
+                <span class="size-value" id="baseFontValue">18</span>
+                <input type="range" min="14" max="24" value="18" class="size-slider" id="baseFontSlider">
+            </div>
+            <div class="size-control">
+                <span class="size-label" id="buttonSizeLabel">Розмір кнопок:</span>
+                <span class="size-value" id="buttonSizeValue">16</span>
+                <input type="range" min="12" max="20" value="16" class="size-slider" id="buttonSizeSlider">
+            </div>
+        </div>
+        
+        <div class="settings-section">
+            <h3 class="settings-section-title" id="languageTitle">Мова</h3>
+            <div class="language-selector">
+                <button class="lang-btn active" data-lang="uk">
+                    <i class="fas fa-language"></i>
+                    <span>Українська</span>
+                </button>
+                <button class="lang-btn" data-lang="en">
+                    <i class="fas fa-language"></i>
+                    <span>English</span>
+                </button>
+                <button class="lang-btn" data-lang="hy">
+                    <i class="fas fa-language"></i>
+                    <span>Հայերեն</span>
+                </button>
+            </div>
+        </div>
+        
+        <button class="btn-long" onclick="saveSettings()" id="saveSettingsBtn">
+            <i class="fas fa-save"></i>
+            <span>Зберегти налаштування</span>
         </button>
     </div>
-    <button class="button" id="edit-button" onclick="startEdit()">
-        Редагувати
-    </button>
-</div>
 
-<!-- Auth Forms -->
-<div id="auth-menu" class="auth-form" style="display: none">
-    <div class="form-container">
-        <div id="login-form">
-            <h3>Увійти</h3>
-            <div id="login-error" class="error-message"></div>
-            <input type="email" id="login-email" placeholder="Email" />
-            <input type="password" id="login-password" placeholder="Пароль" />
-            <button class="button" onclick="login()">Увійти</button>
-            <button class="switch-form" onclick="showRegisterForm()">
-                Зареєструватися
-            </button>
-        </div>
-        <div id="register-form" style="display: none">
-            <h3>Реєстрація</h3>
-            <div id="register-error" class="error-message"></div>
-            <input type="text" id="register-name" placeholder="Ім'я" />
-            <input type="email" id="register-email" placeholder="Email" />
-            <input type="password" id="register-password" placeholder="Пароль" />
-            <input
-                    type="password"
-                    id="register-confirm-password"
-                    placeholder="Підтвердіть пароль"
-            />
-            <button class="button" onclick="register()">Зареєструватися</button>
-            <button class="switch-form" onclick="showLoginForm()">
-                Вже маєте акаунт? Увійти
-            </button>
+    <!-- ===== Main Content ===== -->
+    <main class="main">
+        <!-- ===== SCREEN: MAIN (категорії) ===== -->
+        <section class="screen is-active" id="screen-main">
+            <h2 class="section-title" id="categoriesTitle">Категорії страв</h2>
+
+            <!-- Search Results -->
+            <div class="search-results" id="search-results" style="display:none;"></div>
+
+            <!-- ===== CATEGORIES LIST ===== -->
+            <div id="categories">
+                <!-- Категорії будуть додані через JS -->
+                <div class="empty" id="empty-categories" style="display: none;">
+                    <i class="fas fa-utensils"></i>
+                    <p id="emptyCategoriesText">Поки що немає категорій. Натисніть "Додати категорію".</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SCREEN: ADD CATEGORY ===== -->
+        <section class="screen" id="screen-add">
+            <div class="back-row">
+                <button class="btn-back" type="button" id="backFromAddBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span id="backText">Назад</span>
+                </button>
+                <span class="hint" id="addCategoryHint">Додаємо категорію</span>
+            </div>
+
+            <h2 class="section-title" id="addCategoryTitle">Додати категорію</h2>
+
+            <div class="card" style="padding: 1rem;">
+                <label class="hint" for="new-category-name" id="categoryNameLabel">Назва категорії</label>
+                <input
+                    id="new-category-name"
+                    type="text"
+                    placeholder="Наприклад: Салати"
+                    style="width:100%;margin:.35rem 0 .8rem;padding:.85rem 1rem;border:1px solid var(--border);border-radius:14px;font-size:1rem;font-weight:650;"
+                />
+                <button class="btn-wide" type="button" id="addCategoryConfirmBtn">
+                    <i class="fas fa-plus"></i>
+                    <span id="addConfirmText">Додати</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ===== SCREEN: RECIPE VIEW ===== -->
+        <section class="screen" id="screen-recipe">
+            <div class="back-row">
+                <button class="btn-back" type="button" id="backFromRecipeBtn">
+                    <i class="fas fa-arrow-left"></i>
+                    <span id="backText2">Назад</span>
+                </button>
+                <div class="tag star" id="favorite-tag" style="display: none;">
+                    <i class="fas fa-star"></i>
+                    <span id="favoriteText">Улюблене</span>
+                </div>
+            </div>
+
+            <article class="card recipe">
+                <h2 class="recipe__title" id="recipe-title">
+                    <span id="recipe-name">Назва страви</span>
+                    <span class="tag" id="recipe-category-tag">
+                        <i class="fas fa-folder"></i>
+                        <span id="categoryText">Категорія: ...</span>
+                    </span>
+                </h2>
+
+                <div class="recipe__content" id="recipe-display" contenteditable="false">
+                    Текст рецепту...
+                </div>
+
+                <div class="recipe__tools" id="recipe-tools" style="display: none;">
+                    <button class="btn-wide" type="button" id="saveRecipeBtn">
+                        <i class="fas fa-save"></i>
+                        <span id="saveText">Зберегти</span>
+                    </button>
+                    <button class="btn-wide" type="button" id="cancelEditBtn" style="background: #fff; color: var(--edit-btn-color); border: 2px solid var(--edit-btn-color); box-shadow: none;">
+                        <i class="fas fa-times"></i>
+                        <span id="cancelText">Скасувати</span>
+                    </button>
+                </div>
+
+                <button class="btn-wide" type="button" id="editRecipeBtn">
+                    <i class="fas fa-edit"></i>
+                    <span id="editText">Редагувати</span>
+                </button>
+
+                <!-- ===== VIDEO ===== -->
+                <div class="video" id="video-block" style="display: none;">
+                    <div class="video__top">
+                        <p class="video__title">
+                            <i class="fas fa-video"></i>
+                            <span id="videoTitle">Відео</span>
+                        </p>
+                        <button class="btn-outline" type="button" id="addVideoBtn">
+                            <i class="fas fa-plus"></i>
+                            <span id="addVideoText">Додати посилання</span>
+                        </button>
+                    </div>
+
+                    <div class="video__link" id="video-link" style="display: none;">
+                        <span id="linkText">Посилання:</span>
+                        <a href="#" target="_blank" rel="noopener noreferrer" id="video-url">https://youtu.be/xxxxxxx</a>
+                    </div>
+
+                    <div class="video__frame" id="video-frame" style="display: none;">
+                        <iframe
+                            title="YouTube відео"
+                            src=""
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                            id="video-iframe"
+                        ></iframe>
+                    </div>
+
+                    <div class="video__note">
+                        <i class="fas fa-lightbulb"></i>
+                        <span id="videoNote">Порада: можна зберігати звичайне посилання на YouTube — я покажу кнопку для перегляду і (за бажанням) вбудую відео.</span>
+                    </div>
+                </div>
+
+                <!-- ===== SOCIAL LINKS ===== -->
+                <div class="social-links" id="social-links-block" style="display: none;">
+                    <div class="social-links__top">
+                        <p class="social-links__title">
+                            <i class="fas fa-share-alt"></i>
+                            <span id="socialLinksTitle">Соціальні посилання</span>
+                        </p>
+                        <button class="btn-outline" type="button" id="addSocialLinkBtn">
+                            <i class="fas fa-plus"></i>
+                            <span id="addSocialLinkText">Додати посилання</span>
+                        </button>
+                    </div>
+
+                    <div class="social-links__list" id="social-links-list">
+                        <!-- Социальные ссылки будут добавляться здесь -->
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- ===== Auth Forms ===== -->
+    <div id="auth-menu" class="auth-form" style="display: none">
+        <div class="form-container">
+            <div id="login-form">
+                <h3 id="loginTitle">Увійти</h3>
+                <div id="login-error" class="error-message"></div>
+                <input type="email" id="login-email" placeholder="Email" style="width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.8rem;font-size:1rem;" />
+                <input type="password" id="login-password" placeholder="Пароль" style="width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;font-size:1rem;" />
+                <button class="btn-wide" onclick="login()" style="width:100%;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span id="loginBtnText">Увійти</span>
+                </button>
+                <button class="switch-form" onclick="showRegisterForm()" id="registerSwitchText">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Зареєструватися</span>
+                </button>
+            </div>
+            <div id="register-form" style="display: none">
+                <h3 id="registerTitle">Реєстрація</h3>
+                <div id="register-error" class="error-message"></div>
+                <input type="text" id="register-name" placeholder="Ім'я" style="width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.8rem;font-size:1rem;" />
+                <input type="email" id="register-email" placeholder="Email" style="width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.8rem;font-size:1rem;" />
+                <input type="password" id="register-password" placeholder="Пароль" style="width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.8rem;font-size:1rem;" />
+                <input type="password" id="register-confirm-password" placeholder="Підтвердіть пароль" style="width:100%;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1rem;font-size:1rem;" />
+                <button class="btn-wide" onclick="register()" style="width:100%;">
+                    <i class="fas fa-user-plus"></i>
+                    <span id="registerBtnText">Зареєструватися</span>
+                </button>
+                <button class="switch-form" onclick="showLoginForm()" id="loginSwitchText">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Вже маєте акаунт? Увійти</span>
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // ==================== Конфігурація Firebase ====================
+    <!-- ===== Link Preview Modal ===== -->
+    <div class="link-preview-modal" id="linkPreviewModal" style="display: none;">
+        <div class="link-preview-content">
+            <div class="link-preview-header">
+                <h3 style="margin: 0;" id="previewTitle">Перегляд посилання</h3>
+                <button class="btn" onclick="closeLinkPreview()">
+                    <i class="fas fa-times"></i>
+                    <span id="closePreviewText">Закрити</span>
+                </button>
+            </div>
+            <iframe class="link-preview-iframe" id="linkPreviewIframe"></iframe>
+        </div>
+    </div>
+
+    <script>
+    // ==================== КОНФИГУРАЦИЯ FIREBASE ====================
     const firebaseConfig = {
         apiKey: "AIzaSyCsi129Y9ltNjMbNPU8D9s1JURMxVyeHYs",
         authDomain: "notebook-66f4e.firebaseapp.com",
@@ -403,18 +1469,763 @@
         appId: "1:1234567890:web:abcdef1234567890",
     };
 
+    // Инициализация Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // Глобальные переменные
     let currentUser = null;
     let currentCat = null;
     let currentDish = null;
+    
+    // Переменные для поиска
+    let searchCache = {
+        categories: {},
+        flatCats: [],
+        flatDishes: []
+    };
+    let debounceTimer = null;
 
-    // ==================== Аутентифікація ====================
+    // Текущий язык
+    let currentLanguage = 'uk';
+    
+    // Локализация
+    const translations = {
+        uk: {
+            // Заголовки
+            appTitle: "Кулінарна книга",
+            categoriesTitle: "Категорії страв",
+            addCategoryTitle: "Додати категорію",
+            
+            // Кнопки
+            authText: "Увійти",
+            logoutText: "Вийти",
+            addCategoryText: "Додати категорію",
+            backText: "Назад",
+            addConfirmText: "Додати",
+            editText: "Редагувати",
+            saveText: "Зберегти",
+            cancelText: "Скасувати",
+            favoriteText: "Улюблене",
+            categoryText: "Категорія: ",
+            
+            // Подсказки
+            addCategoryHint: "Додаємо категорію",
+            categoryNameLabel: "Назва категорії",
+            emptyCategoriesText: "Поки що немає категорій. Натисніть \"Додати категорію\".",
+            
+            // Видео
+            videoTitle: "Відео",
+            addVideoText: "Додати посилання",
+            linkText: "Посилання:",
+            videoNote: "Порада: можна зберігати звичайне посилання на YouTube — я покажу кнопку для перегляду і (за бажанням) вбудую відео.",
+            
+            // Соцсети
+            socialLinksTitle: "Соціальні посилання",
+            addSocialLinkText: "Додати посилання",
+            copyLinkText: "Копіювати",
+            viewLinkText: "Перегляд",
+            deleteLinkText: "Видалити",
+            
+            // Настройки
+            settingsTitle: "Налаштування",
+            colorThemeTitle: "Кольорова тема",
+            textSizeTitle: "Розмір тексту",
+            baseFontLabel: "Базовий розмір:",
+            buttonSizeLabel: "Розмір кнопок:",
+            languageTitle: "Мова",
+            saveSettingsBtn: "Зберегти налаштування",
+            
+            // Авторизация
+            loginTitle: "Увійти",
+            loginBtnText: "Увійти",
+            registerTitle: "Реєстрація",
+            registerBtnText: "Зареєструватися",
+            registerSwitchText: "Зареєструватися",
+            loginSwitchText: "Вже маєте акаунт? Увійти",
+            
+            // Предпросмотр
+            previewTitle: "Перегляд посилання",
+            closePreviewText: "Закрити",
+            
+            // Поиск
+            searchPlaceholder: "Пошук: категорія або страва… (наприклад: борщ, салат, улюблене)",
+            
+            // Алerts
+            confirmDeleteCategory: "Видалити категорію разом з усіма стравами?",
+            confirmDeleteDish: "Видалити страву?",
+            confirmDeleteLink: "Видалити посилання?",
+            enterCategoryName: "Введіть назву категорії",
+            enterDishName: "Назва страви:",
+            enterVideoUrl: "Вставте посилання на відео (YouTube):",
+            enterSocialUrl: "Вставте посилання на соціальну мережу:",
+            selectPlatform: "Виберіть платформу:",
+            linkCopied: "Посилання скопійовано!",
+            noAccountAlert: "Спочатку увійдіть у свій акаунт."
+        },
+        en: {
+            appTitle: "Cookbook",
+            categoriesTitle: "Dish Categories",
+            addCategoryTitle: "Add Category",
+            
+            authText: "Login",
+            logoutText: "Logout",
+            addCategoryText: "Add Category",
+            backText: "Back",
+            addConfirmText: "Add",
+            editText: "Edit",
+            saveText: "Save",
+            cancelText: "Cancel",
+            favoriteText: "Favorite",
+            categoryText: "Category: ",
+            
+            addCategoryHint: "Adding category",
+            categoryNameLabel: "Category name",
+            emptyCategoriesText: "No categories yet. Click \"Add Category\".",
+            
+            videoTitle: "Video",
+            addVideoText: "Add link",
+            linkText: "Link:",
+            videoNote: "Tip: you can save a regular YouTube link - I'll show a button to view and (optional) embed the video.",
+            
+            socialLinksTitle: "Social Links",
+            addSocialLinkText: "Add link",
+            copyLinkText: "Copy",
+            viewLinkText: "View",
+            deleteLinkText: "Delete",
+            
+            settingsTitle: "Settings",
+            colorThemeTitle: "Color Theme",
+            textSizeTitle: "Text Size",
+            baseFontLabel: "Base size:",
+            buttonSizeLabel: "Button size:",
+            languageTitle: "Language",
+            saveSettingsBtn: "Save Settings",
+            
+            loginTitle: "Login",
+            loginBtnText: "Login",
+            registerTitle: "Registration",
+            registerBtnText: "Register",
+            registerSwitchText: "Register",
+            loginSwitchText: "Already have an account? Login",
+            
+            previewTitle: "Link Preview",
+            closePreviewText: "Close",
+            
+            searchPlaceholder: "Search: category or dish… (for example: borscht, salad, favorite)",
+            
+            confirmDeleteCategory: "Delete category with all dishes?",
+            confirmDeleteDish: "Delete dish?",
+            confirmDeleteLink: "Delete link?",
+            enterCategoryName: "Enter category name",
+            enterDishName: "Dish name:",
+            enterVideoUrl: "Paste video link (YouTube):",
+            enterSocialUrl: "Paste social media link:",
+            selectPlatform: "Select platform:",
+            linkCopied: "Link copied!",
+            noAccountAlert: "Please log in to your account first."
+        },
+        hy: {
+            appTitle: "Խոհարարական գիրք",
+            categoriesTitle: "Ուտեստների կատեգորիաներ",
+            addCategoryTitle: "Ավելացնել կատեգորիա",
+            
+            authText: "Մուտք",
+            logoutText: "Ելք",
+            addCategoryText: "Ավելացնել կատեգորիա",
+            backText: "Հետ",
+            addConfirmText: "Ավելացնել",
+            editText: "Խմբագրել",
+            saveText: "Պահպանել",
+            cancelText: "Չեղարկել",
+            favoriteText: "Սիրված",
+            categoryText: "Կատեգորիա: ",
+            
+            addCategoryHint: "Ավելացնում ենք կատեգորիա",
+            categoryNameLabel: "Կատեգորիայի անվանումը",
+            emptyCategoriesText: "Դեռ կատեգորիաներ չկան: Սեղմեք \"Ավելացնել կատեգորիա\".",
+            
+            videoTitle: "Տեսանյութ",
+            addVideoText: "Ավելացնել հղում",
+            linkText: "Հղում:",
+            videoNote: "Հուշում: կարող եք պահել սովորական YouTube հղումը - ես ցույց կտամ դիտելու կոճակը և (ըստ ցանկության) ներդնել տեսանյութը:",
+            
+            socialLinksTitle: "Սոցիալական հղումներ",
+            addSocialLinkText: "Ավելացնել հղում",
+            copyLinkText: "Պատճենել",
+            viewLinkText: "Դիտել",
+            deleteLinkText: "Ջնջել",
+            
+            settingsTitle: "Կարգավորումներ",
+            colorThemeTitle: "Գույնի թեմա",
+            textSizeTitle: "Տեքստի չափը",
+            baseFontLabel: "Հիմնական չափը:",
+            buttonSizeLabel: "Կոճակների չափը:",
+            languageTitle: "Լեզու",
+            saveSettingsBtn: "Պահպանել կարգավորումները",
+            
+            loginTitle: "Մուտք",
+            loginBtnText: "Մուտք",
+            registerTitle: "Գրանցում",
+            registerBtnText: "Գրանցվել",
+            registerSwitchText: "Գրանցվել",
+            loginSwitchText: "Արդեն ունեք հաշիվ: Մուտք",
+            
+            previewTitle: "Հղման նախադիտում",
+            closePreviewText: "Փակել",
+            
+            searchPlaceholder: "Որոնում: կատեգորիա կամ ուտեստ… (օրինակ՝ բորշչ, աղցան, սիրված)",
+            
+            confirmDeleteCategory: "Ջնջել կատեգորիան բոլոր ուտեստներով միասին:",
+            confirmDeleteDish: "Ջնջել ուտեստը:",
+            confirmDeleteLink: "Ջնջել հղումը:",
+            enterCategoryName: "Մուտքագրեք կատեգորիայի անվանումը",
+            enterDishName: "Ուտեստի անվանումը:",
+            enterVideoUrl: "Կպցրեք տեսանյութի հղումը (YouTube):",
+            enterSocialUrl: "Կպցրեք սոցիալական ցանցի հղումը:",
+            selectPlatform: "Ընտրեք հարթակը:",
+            linkCopied: "Հղումը պատճենվել է:",
+            noAccountAlert: "Նախ մուտք գործեք ձեր հաշիվ:"
+        }
+    };
+
+    // ==================== ЛОКАЛИЗАЦИЯ ====================
+    function setLanguage(lang) {
+        currentLanguage = lang;
+        document.getElementById('html-lang').lang = lang;
+        
+        // Обновляем все текстовые элементы
+        const t = translations[lang];
+        
+        // Заголовки
+        document.getElementById('appTitle').textContent = t.appTitle;
+        document.getElementById('page-title').textContent = t.appTitle;
+        document.getElementById('categoriesTitle').textContent = t.categoriesTitle;
+        document.getElementById('addCategoryTitle').textContent = t.addCategoryTitle;
+        
+        // Кнопки
+        if (currentUser) {
+            document.getElementById('authText').textContent = t.logoutText;
+        } else {
+            document.getElementById('authText').textContent = t.authText;
+        }
+        document.getElementById('addCategoryText').textContent = t.addCategoryText;
+        document.getElementById('backText').textContent = t.backText;
+        document.getElementById('backText2').textContent = t.backText;
+        document.getElementById('addConfirmText').textContent = t.addConfirmText;
+        document.getElementById('editText').textContent = t.editText;
+        document.getElementById('saveText').textContent = t.saveText;
+        document.getElementById('cancelText').textContent = t.cancelText;
+        document.getElementById('favoriteText').textContent = t.favoriteText;
+        
+        // Тексты
+        document.getElementById('categoryText').textContent = t.categoryText;
+        document.getElementById('addCategoryHint').textContent = t.addCategoryHint;
+        document.getElementById('categoryNameLabel').textContent = t.categoryNameLabel;
+        document.getElementById('emptyCategoriesText').textContent = t.emptyCategoriesText;
+        
+        // Видео
+        document.getElementById('videoTitle').textContent = t.videoTitle;
+        document.getElementById('addVideoText').textContent = t.addVideoText;
+        document.getElementById('linkText').textContent = t.linkText;
+        document.getElementById('videoNote').textContent = t.videoNote;
+        
+        // Соцсети
+        document.getElementById('socialLinksTitle').textContent = t.socialLinksTitle;
+        document.getElementById('addSocialLinkText').textContent = t.addSocialLinkText;
+        
+        // Настройки
+        document.getElementById('settingsTitle').textContent = t.settingsTitle;
+        document.getElementById('colorThemeTitle').textContent = t.colorThemeTitle;
+        document.getElementById('textSizeTitle').textContent = t.textSizeTitle;
+        document.getElementById('baseFontLabel').textContent = t.baseFontLabel;
+        document.getElementById('buttonSizeLabel').textContent = t.buttonSizeLabel;
+        document.getElementById('languageTitle').textContent = t.languageTitle;
+        document.getElementById('saveSettingsBtn').textContent = t.saveSettingsBtn;
+        
+        // Авторизация
+        document.getElementById('loginTitle').textContent = t.loginTitle;
+        document.getElementById('loginBtnText').textContent = t.loginBtnText;
+        document.getElementById('registerTitle').textContent = t.registerTitle;
+        document.getElementById('registerBtnText').textContent = t.registerBtnText;
+        document.getElementById('registerSwitchText').textContent = t.registerSwitchText;
+        document.getElementById('loginSwitchText').textContent = t.loginSwitchText;
+        
+        // Предпросмотр
+        document.getElementById('previewTitle').textContent = t.previewTitle;
+        document.getElementById('closePreviewText').textContent = t.closePreviewText;
+        
+        // Поиск
+        document.getElementById('global-search').placeholder = t.searchPlaceholder;
+        
+        // Обновляем активную кнопку языка
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-lang') === lang) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Сохраняем язык в localStorage
+        localStorage.setItem('preferredLanguage', lang);
+    }
+
+    // ==================== НАСТРОЙКИ ====================
+    function loadSettings() {
+        // Цвета
+        const savedHeaderColor = localStorage.getItem('headerColor');
+        const savedEditBtnColor = localStorage.getItem('editBtnColor');
+        const savedBackBtnColor = localStorage.getItem('backBtnColor');
+        
+        if (savedHeaderColor) {
+            document.documentElement.style.setProperty('--header-color', savedHeaderColor);
+            document.documentElement.style.setProperty('--primary', savedHeaderColor);
+            // Выделяем выбранный цвет
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
+                if (option.getAttribute('data-color') === savedHeaderColor) {
+                    option.classList.add('selected');
+                }
+            });
+        }
+        
+        // Размеры шрифтов
+        const savedBaseFont = localStorage.getItem('baseFontSize');
+        const savedButtonFont = localStorage.getItem('buttonFontSize');
+        
+        if (savedBaseFont) {
+            document.documentElement.style.setProperty('--base-font-size', savedBaseFont + 'px');
+            document.getElementById('baseFontSlider').value = savedBaseFont;
+            document.getElementById('baseFontValue').textContent = savedBaseFont;
+            
+            // Обновляем остальные размеры пропорционально
+            const baseSize = parseInt(savedBaseFont);
+            document.documentElement.style.setProperty('--h1-size', (baseSize * 1.55 / 18) + 'rem');
+            document.documentElement.style.setProperty('--h2-size', (baseSize * 1.25 / 18) + 'rem');
+            document.documentElement.style.setProperty('--h3-size', (baseSize * 1.1 / 18) + 'rem');
+            document.documentElement.style.setProperty('--p-size', (baseSize * 1 / 18) + 'rem');
+            document.documentElement.style.setProperty('--small-size', (baseSize * 0.92 / 18) + 'rem');
+        }
+        
+        if (savedButtonFont) {
+            document.documentElement.style.setProperty('--button-font-size', savedButtonFont + 'px');
+            document.getElementById('buttonSizeSlider').value = savedButtonFont;
+            document.getElementById('buttonSizeValue').textContent = savedButtonFont;
+            
+            // Обновляем padding кнопок пропорционально
+            const buttonSize = parseInt(savedButtonFont);
+            const paddingVertical = (buttonSize * 0.58 / 16) + 'rem';
+            const paddingHorizontal = (buttonSize * 0.9 / 16) + 'rem';
+            document.documentElement.style.setProperty('--button-padding', `${paddingVertical} ${paddingHorizontal}`);
+        }
+        
+        // Язык
+        const savedLanguage = localStorage.getItem('preferredLanguage');
+        if (savedLanguage && translations[savedLanguage]) {
+            setLanguage(savedLanguage);
+        }
+    }
+
+    function saveSettings() {
+        // Сохраняем цвет
+        const selectedColor = document.querySelector('.color-option.selected');
+        if (selectedColor) {
+            const color = selectedColor.getAttribute('data-color');
+            localStorage.setItem('headerColor', color);
+            localStorage.setItem('editBtnColor', color);
+            localStorage.setItem('backBtnColor', color);
+            
+            document.documentElement.style.setProperty('--header-color', color);
+            document.documentElement.style.setProperty('--primary', color);
+            document.documentElement.style.setProperty('--edit-btn-color', color);
+            document.documentElement.style.setProperty('--back-btn-color', color);
+            document.documentElement.style.setProperty('--accent', color);
+            
+            // Для вторичного цвета делаем темнее
+            const darkerColor = shadeColor(color, -30);
+            document.documentElement.style.setProperty('--secondary', darkerColor);
+        }
+        
+        // Сохраняем размеры
+        const baseFontSize = document.getElementById('baseFontSlider').value;
+        const buttonFontSize = document.getElementById('buttonSizeSlider').value;
+        
+        localStorage.setItem('baseFontSize', baseFontSize);
+        localStorage.setItem('buttonFontSize', buttonFontSize);
+        
+        // Применяем размеры
+        document.documentElement.style.setProperty('--base-font-size', baseFontSize + 'px');
+        document.documentElement.style.setProperty('--button-font-size', buttonFontSize + 'px');
+        
+        // Обновляем остальные размеры пропорционально
+        const baseSize = parseInt(baseFontSize);
+        document.documentElement.style.setProperty('--h1-size', (baseSize * 1.55 / 18) + 'rem');
+        document.documentElement.style.setProperty('--h2-size', (baseSize * 1.25 / 18) + 'rem');
+        document.documentElement.style.setProperty('--h3-size', (baseSize * 1.1 / 18) + 'rem');
+        document.documentElement.style.setProperty('--p-size', (baseSize * 1 / 18) + 'rem');
+        document.documentElement.style.setProperty('--small-size', (baseSize * 0.92 / 18) + 'rem');
+        
+        // Обновляем padding кнопок
+        const buttonSize = parseInt(buttonFontSize);
+        const paddingVertical = (buttonSize * 0.58 / 16) + 'rem';
+        const paddingHorizontal = (buttonSize * 0.9 / 16) + 'rem';
+        document.documentElement.style.setProperty('--button-padding', `${paddingVertical} ${paddingHorizontal}`);
+        
+        closeSettings();
+        showNotification(translations[currentLanguage].saveText + "!");
+    }
+
+    // Функция для затемнения цвета
+    function shadeColor(color, percent) {
+        let R = parseInt(color.substring(1,3),16);
+        let G = parseInt(color.substring(3,5),16);
+        let B = parseInt(color.substring(5,7),16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R<255)?R:255;  
+        G = (G<255)?G:255;  
+        B = (B<255)?B:255;  
+
+        R = Math.round(R);
+        G = Math.round(G);
+        B = Math.round(B);
+
+        const RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        const GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        const BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+        return "#"+RR+GG+BB;
+    }
+
+    function initSettings() {
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        const settingsSidebar = document.getElementById('settingsSidebar');
+        
+        settingsBtn.addEventListener('click', () => {
+            settingsSidebar.classList.add('open');
+            settingsOverlay.classList.add('open');
+        });
+        
+        settingsOverlay.addEventListener('click', closeSettings);
+        
+        // Обработчики слайдеров
+        document.getElementById('baseFontSlider').addEventListener('input', function() {
+            document.getElementById('baseFontValue').textContent = this.value;
+        });
+        
+        document.getElementById('buttonSizeSlider').addEventListener('input', function() {
+            document.getElementById('buttonSizeValue').textContent = this.value;
+        });
+        
+        // Обработчики цветов
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+        
+        // Обработчики языка
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                setLanguage(lang);
+            });
+        });
+    }
+
+    function closeSettings() {
+        document.getElementById('settingsSidebar').classList.remove('open');
+        document.getElementById('settingsOverlay').classList.remove('open');
+    }
+
+    // ==================== СОЦИАЛЬНЫЕ ССЫЛКИ ====================
+    function addSocialLink() {
+        if (!currentCat || !currentDish) return;
+        
+        const platforms = [
+            { name: 'YouTube', value: 'youtube', icon: 'fab fa-youtube' },
+            { name: 'TikTok', value: 'tiktok', icon: 'fab fa-tiktok' },
+            { name: 'Facebook', value: 'facebook', icon: 'fab fa-facebook' },
+            { name: 'Instagram', value: 'instagram', icon: 'fab fa-instagram' },
+            { name: 'Twitter/X', value: 'twitter', icon: 'fab fa-twitter' },
+            { name: 'Другое', value: 'other', icon: 'fas fa-link' }
+        ];
+        
+        const platformOptions = platforms.map(p => 
+            `<option value="${p.value}">${p.name}</option>`
+        ).join('');
+        
+        const html = `
+            <div>
+                <label style="display:block; margin-bottom: 8px; font-weight: 600;">${translations[currentLanguage].selectPlatform}</label>
+                <select id="social-platform" style="width:100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border);">
+                    ${platformOptions}
+                </select>
+                <label style="display:block; margin-bottom: 8px; font-weight: 600;">URL:</label>
+                <input type="text" id="social-url" placeholder="https://..." style="width:100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            </div>
+        `;
+        
+        const result = showCustomPrompt(translations[currentLanguage].enterSocialUrl, html);
+        if (!result) return;
+        
+        const platform = document.getElementById('social-platform').value;
+        const url = document.getElementById('social-url').value.trim();
+        
+        if (!url) return;
+        
+        const linkId = db.ref().push().key;
+        const linkData = {
+            platform: platform,
+            url: url,
+            name: platforms.find(p => p.value === platform)?.name || 'Link'
+        };
+        
+        db.ref(`users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/socialLinks/${linkId}`)
+            .set(linkData)
+            .then(() => {
+                loadSocialLinks(currentCat, currentDish);
+            });
+    }
+
+    function loadSocialLinks(catId, dishId) {
+        if (!currentUser) return;
+        
+        db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/socialLinks`)
+            .once("value")
+            .then((snap) => {
+                const links = snap.val() || {};
+                renderSocialLinks(links);
+            });
+    }
+
+    function renderSocialLinks(links) {
+        const container = document.getElementById('social-links-list');
+        const block = document.getElementById('social-links-block');
+        
+        if (Object.keys(links).length === 0) {
+            block.style.display = 'none';
+            return;
+        }
+        
+        block.style.display = 'block';
+        container.innerHTML = '';
+        
+        const t = translations[currentLanguage];
+        
+        Object.entries(links).forEach(([linkId, link]) => {
+            const platformIcons = {
+                youtube: 'fab fa-youtube',
+                tiktok: 'fab fa-tiktok',
+                facebook: 'fab fa-facebook',
+                instagram: 'fab fa-instagram',
+                twitter: 'fab fa-twitter',
+                other: 'fas fa-link'
+            };
+            
+            const platformColors = {
+                youtube: '#FF0000',
+                tiktok: '#000000',
+                facebook: '#1877F2',
+                instagram: 'linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D)',
+                twitter: '#1DA1F2',
+                other: 'var(--primary)'
+            };
+            
+            const linkEl = document.createElement('div');
+            linkEl.className = 'social-link-item';
+            linkEl.innerHTML = `
+                <div class="social-icon ${link.platform}" style="background: ${platformColors[link.platform] || 'var(--primary)'};">
+                    <i class="${platformIcons[link.platform] || 'fas fa-link'}"></i>
+                </div>
+                <div class="social-link-content">
+                    <p class="social-link-name">${escapeHtml(link.name)}</p>
+                    <p class="social-link-url">${escapeHtml(link.url)}</p>
+                </div>
+                <div class="social-link-actions">
+                    <button class="social-action-btn copy-link-btn" onclick="copyToClipboard('${escapeHtml(link.url)}')" title="${t.copyLinkText}">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="social-action-btn" onclick="previewLink('${escapeHtml(link.url)}')" title="${t.viewLinkText}">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                    <button class="social-action-btn" onclick="deleteSocialLink('${linkId}')" title="${t.deleteLinkText}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(linkEl);
+        });
+    }
+
+    function deleteSocialLink(linkId) {
+        if (!confirm(translations[currentLanguage].confirmDeleteLink)) return;
+        
+        db.ref(`users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/socialLinks/${linkId}`)
+            .remove()
+            .then(() => {
+                loadSocialLinks(currentCat, currentDish);
+            });
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification(translations[currentLanguage].linkCopied);
+        });
+    }
+
+    function previewLink(url) {
+        document.getElementById('linkPreviewIframe').src = url;
+        document.getElementById('linkPreviewModal').style.display = 'flex';
+    }
+
+    function closeLinkPreview() {
+        document.getElementById('linkPreviewModal').style.display = 'none';
+        document.getElementById('linkPreviewIframe').src = '';
+    }
+
+    // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text || "";
+        return div.innerHTML;
+    }
+
+    function norm(s) {
+        return (s || "").toString().trim().toLowerCase();
+    }
+
+    function includesLoose(hay, needle) {
+        hay = norm(hay);
+        needle = norm(needle);
+        if (!hay || !needle) return false;
+        return hay.includes(needle) || needle.includes(hay);
+    }
+
+    function showScreen(id) {
+        const screens = ["screen-main", "screen-add", "screen-recipe"];
+        screens.forEach(screenId => {
+            const el = document.getElementById(screenId);
+            if (el) {
+                el.style.display = screenId === id ? "block" : "none";
+                if (el.classList) {
+                    if (screenId === id) {
+                        el.classList.add("is-active");
+                    } else {
+                        el.classList.remove("is-active");
+                    }
+                }
+            }
+        });
+    }
+
+    function showNotification(message) {
+        // Создаем уведомление
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 1002;
+            animation: slideIn 0.3s ease;
+            font-weight: 600;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Удаляем через 3 секунды
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    function showCustomPrompt(title, htmlContent) {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1001;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: white;
+                padding: 20px;
+                border-radius: var(--radius);
+                width: 90%;
+                max-width: 400px;
+                box-shadow: var(--shadow);
+            `;
+            
+            modal.innerHTML = `
+                <h3 style="margin-top: 0; margin-bottom: 15px;">${title}</h3>
+                ${htmlContent}
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="customPromptOk" style="flex: 1; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        OK
+                    </button>
+                    <button id="customPromptCancel" style="flex: 1; padding: 10px; background: #f1f5f9; color: var(--text); border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                        ${translations[currentLanguage].cancelText}
+                    </button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            document.getElementById('customPromptOk').onclick = () => {
+                document.body.removeChild(overlay);
+                resolve(true);
+            };
+            
+            document.getElementById('customPromptCancel').onclick = () => {
+                document.body.removeChild(overlay);
+                resolve(false);
+            };
+        });
+    }
+
+    // Добавляем CSS для анимаций уведомлений
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // ==================== АУТЕНТИФИКАЦИЯ ====================
     function toggleAuthMenu() {
         if (currentUser) {
-            if (confirm("Вийти?")) {
+            if (confirm(translations[currentLanguage].logoutText + "?")) {
                 auth.signOut();
             }
         } else {
@@ -435,20 +2246,6 @@
         document.getElementById("register-error").textContent = "";
     }
 
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUser = user;
-            hideAuthMenu();
-            loadCategories();
-            document.getElementById("authButton").textContent = "Вийти";
-        } else {
-            currentUser = null;
-            document.getElementById("categories").innerHTML = "";
-            document.getElementById("authButton").textContent = "Увійти";
-            showMainMenu();
-        }
-    });
-
     function hideAuthMenu() {
         document.getElementById("auth-menu").style.display = "none";
     }
@@ -457,10 +2254,11 @@
         const email = document.getElementById("login-email").value;
         const password = document.getElementById("login-password").value;
         const error = document.getElementById("login-error");
-
-        auth
-            .signInWithEmailAndPassword(email, password)
-            .catch((err) => (error.textContent = err.message));
+        
+        auth.signInWithEmailAndPassword(email, password)
+            .catch((err) => {
+                error.textContent = err.message;
+            });
     }
 
     function register() {
@@ -469,82 +2267,218 @@
         const password = document.getElementById("register-password").value;
         const confirm = document.getElementById("register-confirm-password").value;
         const error = document.getElementById("register-error");
-
+        
         if (password !== confirm) {
-            error.textContent = "Паролі не співпадають";
+            error.textContent = translations[currentLanguage].passwordsNotMatch || "Паролі не співпадають";
             return;
         }
-
-        auth
-            .createUserWithEmailAndPassword(email, password)
+        
+        auth.createUserWithEmailAndPassword(email, password)
             .then((cred) => {
-                return db
-                    .ref(`users/${cred.user.uid}/profile`)
-                    .set({ name, email });
+                return db.ref(`users/${cred.user.uid}/profile`).set({ name, email });
             })
             .then(() => {
                 hideAuthMenu();
             })
-            .catch((err) => (error.textContent = err.message));
+            .catch((err) => {
+                error.textContent = err.message;
+            });
     }
 
-    // ==================== Категорії ====================
+    // Слушатель изменения состояния аутентификации
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            currentUser = user;
+            hideAuthMenu();
+            loadCategories();
+            document.getElementById("authText").textContent = translations[currentLanguage].logoutText;
+        } else {
+            currentUser = null;
+            document.getElementById("categories").innerHTML = "";
+            document.getElementById("authText").textContent = translations[currentLanguage].authText;
+            showScreen("screen-main");
+        }
+    });
+
+    // ==================== КАТЕГОРИИ ====================
     function loadCategories() {
         if (!currentUser) return;
+        
         db.ref(`users/${currentUser.uid}/categories`)
             .once("value")
             .then((snap) => {
                 const data = snap.val() || {};
+                rebuildSearchCache(data);
                 renderCategories(data);
             });
     }
 
+    function rebuildSearchCache(data) {
+        searchCache.categories = data || {};
+        searchCache.flatCats = [];
+        searchCache.flatDishes = [];
+        
+        for (const [catId, cat] of Object.entries(searchCache.categories)) {
+            const catName = cat?.name || "";
+            const dishesObj = cat?.dishes || {};
+            const dishEntries = Object.entries(dishesObj);
+            
+            // Сортируем блюда: сначала избранные
+            const sortedDishes = dishEntries.sort((a, b) => {
+                const aFavorite = !!a[1]?.favorite;
+                const bFavorite = !!b[1]?.favorite;
+                if (aFavorite && !bFavorite) return -1;
+                if (!aFavorite && bFavorite) return 1;
+                return 0;
+            });
+            
+            searchCache.flatCats.push({
+                catId,
+                name: catName,
+                dishesCount: dishEntries.length,
+                hasFavorites: sortedDishes.some(([_, dish]) => dish?.favorite)
+            });
+            
+            for (const [dishId, dish] of sortedDishes) {
+                searchCache.flatDishes.push({
+                    catId,
+                    catName,
+                    dishId,
+                    name: dish?.name || "",
+                    description: dish?.description || "",
+                    favorite: !!dish?.favorite,
+                    videoUrl: dish?.videoUrl || ""
+                });
+            }
+        }
+        
+        // Сортируем категории: сначала те, где есть избранные
+        searchCache.flatCats.sort((a, b) => {
+            if (a.hasFavorites && !b.hasFavorites) return -1;
+            if (!a.hasFavorites && b.hasFavorites) return 1;
+            return a.name.localeCompare(b.name);
+        });
+    }
+
     function renderCategories(categories) {
         const container = document.getElementById("categories");
+        const emptyEl = document.getElementById("empty-categories");
+        
         container.innerHTML = "";
-
-        for (const [catId, cat] of Object.entries(categories)) {
-            const div = document.createElement("div");
-            div.className = "category";
-
-            div.innerHTML = `
-        <div class="category-header">
-          <button onclick="toggleDishes('${catId}')">${escapeHtml(cat.name)}</button>
-          <div class="category-actions">
-            <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" title="Редагувати категорію" onclick="editCategory('${catId}')" />
-            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" title="Видалити категорію" onclick="deleteCategory('${catId}')" />
-          </div>
-        </div>
-        <div class="dishes" id="dishes-${catId}" style="display:none;"></div>
-      `;
-
-            container.appendChild(div);
+        
+        if (Object.keys(categories).length === 0) {
+            emptyEl.style.display = "block";
+            return;
+        }
+        
+        emptyEl.style.display = "none";
+        
+        // Сортируем категории по наличию избранных блюд
+        const sortedCategories = Object.entries(categories).sort((a, b) => {
+            const aDishes = a[1]?.dishes || {};
+            const bDishes = b[1]?.dishes || {};
+            const aHasFavorites = Object.values(aDishes).some(dish => dish?.favorite);
+            const bHasFavorites = Object.values(bDishes).some(dish => dish?.favorite);
+            
+            if (aHasFavorites && !bHasFavorites) return -1;
+            if (!aHasFavorites && bHasFavorites) return 1;
+            return a[1].name.localeCompare(b[1].name);
+        });
+        
+        const t = translations[currentLanguage];
+        
+        for (const [catId, cat] of sortedCategories) {
+            const dishes = cat?.dishes || {};
+            const dishCount = Object.keys(dishes).length;
+            
+            // Сортируем блюда внутри категории: сначала избранные
+            const sortedDishes = Object.entries(dishes).sort((a, b) => {
+                const aFavorite = !!a[1]?.favorite;
+                const bFavorite = !!b[1]?.favorite;
+                if (aFavorite && !bFavorite) return -1;
+                if (!aFavorite && bFavorite) return 1;
+                return 0;
+            });
+            
+            const categoryEl = document.createElement("article");
+            categoryEl.className = "card category";
+            categoryEl.dataset.catId = catId;
+            
+            categoryEl.innerHTML = `
+                <div class="category__head">
+                    <button class="category__toggle" type="button" onclick="toggleDishes('${catId}')">
+                        ${escapeHtml(cat.name)}
+                        <span class="category__meta">• ${dishCount} ${dishCount === 1 ? 'страва' : dishCount < 5 ? 'страви' : 'страв'}</span>
+                    </button>
+                    <div class="category__actions">
+                        <button class="icon-btn" type="button" title="${t.editText}" onclick="editCategory('${catId}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="icon-btn" type="button" title="${t.deleteText}" onclick="deleteCategory('${catId}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="category__body">
+                    <div class="add-dish-btn-container" id="add-dish-btn-${catId}">
+                        <button class="btn-long" type="button" onclick="addDish('${catId}')">
+                            <i class="fas fa-plus"></i>
+                            <span>${t.addConfirmText} страву</span>
+                        </button>
+                    </div>
+                    <div class="dishes" id="dishes-${catId}" style="display: none;"></div>
+                </div>
+            `;
+            
+            container.appendChild(categoryEl);
+            
+            // Если в категории есть блюда, рендерим их
+            if (dishCount > 0) {
+                renderDishes(catId, sortedDishes);
+            }
         }
     }
 
-    function escapeHtml(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
+    function toggleDishes(catId) {
+        const container = document.getElementById(`dishes-${catId}`);
+        const addBtnContainer = document.getElementById(`add-dish-btn-${catId}`);
+        
+        if (container.style.display === "block") {
+            container.style.display = "none";
+            addBtnContainer.classList.remove("visible");
+            container.innerHTML = "";
+        } else {
+            // Показываем кнопку "Додати страву"
+            addBtnContainer.classList.add("visible");
+            
+            // Если блюда еще не загружены, загружаем их
+            if (container.innerHTML === "") {
+                loadDishes(catId);
+            }
+            container.style.display = "block";
+        }
     }
 
     function showAddMenu() {
         document.getElementById("new-category-name").value = "";
-        showScreen("add-menu");
+        showScreen("screen-add");
     }
 
     function addNewCategory() {
         const name = document.getElementById("new-category-name").value.trim();
-        if (!name) return alert("Введіть назву");
-
+        if (!name) {
+            alert(translations[currentLanguage].enterCategoryName);
+            return;
+        }
+        
         const catId = db.ref().push().key;
         db.ref(`users/${currentUser.uid}/categories/${catId}`)
             .set({
-                name,
-                dishes: {},
+                name: name,
+                dishes: {}
             })
             .then(() => {
-                showMainMenu();
+                showScreen("screen-main");
                 loadCategories();
             });
     }
@@ -564,63 +2498,86 @@
     }
 
     function deleteCategory(catId) {
-        if (!confirm("Видалити категорію?")) return;
+        if (!confirm(translations[currentLanguage].confirmDeleteCategory)) return;
+        
         db.ref(`users/${currentUser.uid}/categories/${catId}`)
             .remove()
             .then(loadCategories);
     }
 
-    // ==================== Страви ====================
-    function toggleDishes(catId) {
-        const container = document.getElementById(`dishes-${catId}`);
-        if (container.style.display === "block") {
-            container.style.display = "none";
-            container.innerHTML = "";
-        } else {
-            loadDishes(catId);
-            container.style.display = "block";
-        }
-    }
-
+    // ==================== БЛЮДА ====================
     function loadDishes(catId) {
         db.ref(`users/${currentUser.uid}/categories/${catId}/dishes`)
             .once("value")
             .then((snap) => {
                 const dishes = snap.val() || {};
-                renderDishes(catId, dishes);
+                // Сортируем блюда: сначала избранные
+                const sortedDishes = Object.entries(dishes).sort((a, b) => {
+                    const aFavorite = !!a[1]?.favorite;
+                    const bFavorite = !!b[1]?.favorite;
+                    if (aFavorite && !bFavorite) return -1;
+                    if (!aFavorite && bFavorite) return 1;
+                    return 0;
+                });
+                renderDishes(catId, sortedDishes);
             });
     }
 
     function renderDishes(catId, dishes) {
         const container = document.getElementById(`dishes-${catId}`);
-        container.innerHTML = `<button class="button secondary" onclick="addDish('${catId}')">+ Додати страву</button>`;
-
-        for (const [dishId, dish] of Object.entries(dishes)) {
-            container.insertAdjacentHTML(
-                "beforeend",
-                `
-        <div class="dish">
-          <button onclick="openDish('${catId}','${dishId}')">${escapeHtml(dish.name)}</button>
-          <div class="dish-actions">
-            <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" title="Редагувати страву" onclick="editDish('${catId}','${dishId}')" />
-            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" title="Видалити страву" onclick="deleteDish('${catId}','${dishId}')" />
-          </div>
-        </div>
-      `
-            );
+        
+        container.innerHTML = "";
+        
+        const t = translations[currentLanguage];
+        
+        for (const [dishId, dish] of dishes) {
+            const dishEl = document.createElement("div");
+            dishEl.className = "dish";
+            dishEl.dataset.dishId = dishId;
+            
+            const hasVideo = dish.videoUrl ? "• Є відео" : "";
+            const isFavorite = dish.favorite ? '<span class="tag star"><i class="fas fa-star"></i> ' + t.favoriteText + '</span>' : "";
+            
+            dishEl.innerHTML = `
+                <div class="dish__main">
+                    <p class="dish__title" role="button" onclick="openDish('${catId}', '${dishId}')">
+                        ${isFavorite}${escapeHtml(dish.name)}
+                    </p>
+                    <p class="dish__sub">${hasVideo}</p>
+                </div>
+                <div class="dish__actions">
+                    <button class="icon-mini" type="button" title="${dish.favorite ? t.removeFavorite || 'Прибрати з улюблених' : t.addFavorite || 'Додати в улюблені'}" onclick="toggleFavorite('${catId}', '${dishId}')">
+                        ${dish.favorite ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'}
+                    </button>
+                    <button class="icon-mini" type="button" title="${t.editText}" onclick="editDish('${catId}', '${dishId}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="icon-mini" type="button" title="${t.deleteText}" onclick="deleteDish('${catId}', '${dishId}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(dishEl);
         }
     }
 
     function addDish(catId) {
-        const name = prompt("Назва страви?");
+        const name = prompt(translations[currentLanguage].enterDishName);
         if (!name || !name.trim()) return;
+        
         const dishId = db.ref().push().key;
         db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}`)
             .set({
                 name: name.trim(),
                 description: "",
+                favorite: false,
+                videoUrl: ""
             })
-            .then(() => loadDishes(catId));
+            .then(() => {
+                loadDishes(catId);
+                loadCategories(); // Перезагружаем категории для обновления порядка
+            });
     }
 
     function editDish(catId, dishId) {
@@ -638,819 +2595,425 @@
     }
 
     function deleteDish(catId, dishId) {
-        if (!confirm("Видалити страву?")) return;
+        if (!confirm(translations[currentLanguage].confirmDeleteDish)) return;
+        
         db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}`)
             .remove()
             .then(() => loadDishes(catId));
     }
 
-    // ==================== Рецепт ====================
+    function toggleFavorite(catId, dishId) {
+        if (!currentUser) {
+            alert(translations[currentLanguage].noAccountAlert);
+            return;
+        }
+        
+        const ref = db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}/favorite`);
+        ref.once("value").then((snap) => {
+            const current = !!snap.val();
+            return ref.set(!current);
+        }).then(() => {
+            // Перезагружаем и категории, и блюда
+            loadDishes(catId);
+            loadCategories();
+            
+            // Оновлюємо кеш
+            if (searchCache.categories[catId]?.dishes?.[dishId]) {
+                searchCache.categories[catId].dishes[dishId].favorite = !searchCache.categories[catId].dishes[dishId].favorite;
+                rebuildSearchCache(searchCache.categories);
+            }
+            
+            // Оновити пошук, якщо активний
+            const searchInput = document.getElementById("global-search");
+            if (searchInput && searchInput.value.trim()) {
+                renderSearchResults(searchInput.value);
+            }
+        });
+    }
+
+    // ==================== РЕЦЕПТЫ ====================
     function openDish(catId, dishId) {
         currentCat = catId;
         currentDish = dishId;
+        
         db.ref(`users/${currentUser.uid}/categories/${catId}/dishes/${dishId}`)
             .once("value")
             .then((snap) => {
                 const dish = snap.val();
-                if (!dish) return alert("Страва не знайдена");
-                document.getElementById("recipe-title").textContent = dish.name;
-                document.getElementById("recipe-display").textContent =
-                    dish.description || "";
-                showScreen("recipe-menu");
-                cancelEdit();
+                if (!dish) {
+                    alert("Страва не знайдена");
+                    return;
+                }
+                
+                // Обновляем UI
+                document.getElementById("recipe-name").textContent = dish.name;
+                document.getElementById("recipe-display").textContent = dish.description || "";
+                document.getElementById("recipe-display").contentEditable = "false";
+                document.getElementById("recipe-display").classList.remove("edit-mode");
+                
+                // Обновляем категорию
+                const catName = searchCache.categories[catId]?.name || "Невідома";
+                document.getElementById("recipe-category-tag").innerHTML = `<i class="fas fa-folder"></i> <span>${translations[currentLanguage].categoryText}${catName}</span>`;
+                
+                // Показываем/скрываем избранное
+                const favoriteTag = document.getElementById("favorite-tag");
+                favoriteTag.style.display = dish.favorite ? "flex" : "none";
+                
+                // Показываем/скрываем кнопки редактирования
+                document.getElementById("editRecipeBtn").style.display = "block";
+                document.getElementById("recipe-tools").style.display = "none";
+                
+                // Загружаем видео
+                loadVideo(dish.videoUrl);
+                
+                // Загружаем социальные ссылки
+                loadSocialLinks(catId, dishId);
+                
+                showScreen("screen-recipe");
+            })
+            .catch(error => {
+                console.error("Помилка завантаження рецепту:", error);
+                alert("Не вдалося завантажити рецепт");
+            });
+    }
+
+    function loadVideo(videoUrl) {
+        const videoBlock = document.getElementById("video-block");
+        const videoLink = document.getElementById("video-link");
+        const videoFrame = document.getElementById("video-frame");
+        const videoIframe = document.getElementById("video-iframe");
+        const videoUrlEl = document.getElementById("video-url");
+        
+        if (!videoUrl || videoUrl.trim() === "") {
+            videoBlock.style.display = "none";
+            return;
+        }
+        
+        videoBlock.style.display = "block";
+        videoUrlEl.href = videoUrl;
+        videoUrlEl.textContent = videoUrl;
+        videoLink.style.display = "flex";
+        
+        // Конвертируем ссылку YouTube в embed
+        const embedUrl = ytEmbedUrl(videoUrl);
+        if (embedUrl) {
+            videoIframe.src = embedUrl;
+            videoFrame.style.display = "block";
+        } else {
+            videoFrame.style.display = "none";
+        }
+    }
+
+    function ytEmbedUrl(url) {
+        if (!url) return "";
+        try {
+            const u = new URL(url);
+            const host = u.hostname.replace("www.", "");
+            let id = "";
+            
+            if (host === "youtu.be") {
+                id = u.pathname.replace("/", "").trim();
+            } else if (host === "youtube.com" || host === "m.youtube.com") {
+                if (u.pathname.startsWith("/watch")) {
+                    id = u.searchParams.get("v") || "";
+                } else if (u.pathname.startsWith("/shorts/")) {
+                    id = u.pathname.split("/shorts/")[1] || "";
+                } else if (u.pathname.startsWith("/embed/")) {
+                    id = u.pathname.split("/embed/")[1] || "";
+                }
+            }
+            
+            id = (id || "").split("?")[0].split("&")[0].trim();
+            if (!id) return "";
+            
+            return `https://www.youtube.com/embed/${id}`;
+        } catch {
+            return "";
+        }
+    }
+
+    function addVideo() {
+        if (!currentCat || !currentDish) return;
+        
+        const url = prompt(translations[currentLanguage].enterVideoUrl, "");
+        if (!url || url.trim() === "") return;
+        
+        const cleanUrl = url.trim();
+        db.ref(`users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/videoUrl`)
+            .set(cleanUrl)
+            .then(() => {
+                loadVideo(cleanUrl);
+                // Обновляем кеш
+                if (searchCache.categories[currentCat]?.dishes?.[currentDish]) {
+                    searchCache.categories[currentCat].dishes[currentDish].videoUrl = cleanUrl;
+                }
             });
     }
 
     function startEdit() {
-        const disp = document.getElementById("recipe-display");
-        disp.contentEditable = "true";
-        disp.classList.add("edit-mode");
-        disp.focus();
-        document.getElementById("edit-button").style.display = "none";
-        document.getElementById("recipe-actions").style.display = "flex";
+        const display = document.getElementById("recipe-display");
+        display.contentEditable = "true";
+        display.classList.add("edit-mode");
+        display.focus();
+        
+        document.getElementById("editRecipeBtn").style.display = "none";
+        document.getElementById("recipe-tools").style.display = "flex";
     }
 
     function saveRecipe() {
-        const desc = document.getElementById("recipe-display").innerText.trim();
-        db.ref(
-            `users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/description`
-        )
-            .set(desc)
+        const description = document.getElementById("recipe-display").innerText.trim();
+        
+        db.ref(`users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/description`)
+            .set(description)
             .then(() => {
                 cancelEdit();
+                // Обновляем кеш
+                if (searchCache.categories[currentCat]?.dishes?.[currentDish]) {
+                    searchCache.categories[currentCat].dishes[currentDish].description = description;
+                }
             });
     }
 
     function cancelEdit() {
-        document.getElementById("recipe-display").contentEditable = "false";
-        document.getElementById("recipe-display").classList.remove("edit-mode");
-        document.getElementById("edit-button").style.display = "block";
-        document.getElementById("recipe-actions").style.display = "none";
-    }
-
-    // ==================== Навігація ====================
-    function showScreen(id) {
-        ["main-menu", "add-menu", "recipe-menu"].forEach((s) => {
-            document.getElementById(s).style.display =
-                s === id ? "block" : "none";
-        });
-    }
-
-    function showMainMenu() {
-        showScreen("main-menu");
-        if (currentUser) {
-            loadCategories();
-        }
+        const display = document.getElementById("recipe-display");
+        display.contentEditable = "false";
+        display.classList.remove("edit-mode");
+        
+        document.getElementById("editRecipeBtn").style.display = "block";
+        document.getElementById("recipe-tools").style.display = "none";
+        
+        // Восстанавливаем оригинальный текст
+        db.ref(`users/${currentUser.uid}/categories/${currentCat}/dishes/${currentDish}/description`)
+            .once("value")
+            .then((snap) => {
+                display.textContent = snap.val() || "";
+            });
     }
 
     function goBackFromRecipe() {
         currentCat = null;
         currentDish = null;
-        showMainMenu();
+        showScreen("screen-main");
     }
 
-    // ==================== Голосовий асистент Аск + таймери ====================
-    let askAwake = false;
-    let askInactivityTimer = null;
-    let recognition = null;
-    let askVoice = null;
-
-    // нові прапорці для голосу
-    let askVoiceEnabled = false;
-    let askAlwaysAwake = false;
-
-    // Таймери
-    let askTimers = []; // {id,label,endTime,durationMs}
-    let timersIntervalId = null;
-    let audioCtx = null;
-
-    // Читання рецепта з позицією
-    let askCurrentUtterance = null;
-    let askManuallyStopped = false;
-    let askCurrentDishKey = null;
-
-    function makeDishKey(catId, dishId) {
-        if (!currentUser || !catId || !dishId) return null;
-        return `${currentUser.uid}:${catId}:${dishId}`;
-    }
-
-    function storageKeyForDish(dishKey) {
-        return `ask_read_pos_${dishKey}`;
-    }
-
-    function saveReadingPosition(dishKey, pos) {
-        if (!dishKey) return;
-        try {
-            localStorage.setItem(storageKeyForDish(dishKey), String(pos));
-        } catch (e) {
-            console.warn("Не вдалося зберегти позицію читання:", e);
-        }
-    }
-
-    function getReadingPosition(dishKey) {
-        if (!dishKey) return 0;
-        try {
-            const v = localStorage.getItem(storageKeyForDish(dishKey));
-            if (!v) return 0;
-            const n = parseInt(v, 10);
-            return isNaN(n) ? 0 : n;
-        } catch (e) {
-            return 0;
-        }
-    }
-
-    function clearReadingPosition(dishKey) {
-        if (!dishKey) return;
-        try {
-            localStorage.removeItem(storageKeyForDish(dishKey));
-        } catch (e) {}
-    }
-
-    // ===== Парсинг рецепта: інгредієнти + Опис =====
-    function extractRecipeParts(fullText) {
-        const lines = fullText.split(/\r?\n/);
-        const ingredients = {};
-        const descriptionLines = [];
-        let inDescription = false;
-
-        for (let raw of lines) {
-            const line = raw.trim();
-            if (!line) continue;
-
-            const lower = line.toLowerCase();
-
-            if (lower.startsWith("опис")) {
-                inDescription = true;
-                continue;
-            }
-
-            if (inDescription) {
-                descriptionLines.push(line);
-            } else {
-                const dashIdx = line.indexOf("-");
-                if (dashIdx > 0) {
-                    const name = line.slice(0, dashIdx).trim().toLowerCase();
-                    const amount = line.slice(dashIdx + 1).trim();
-                    if (name && amount) {
-                        ingredients[name] = amount;
-                    }
+    // ==================== ПОИСК ====================
+    function initSearch() {
+        const searchInput = document.getElementById("global-search");
+        const clearBtn = document.getElementById("clearSearchBtn");
+        
+        if (!searchInput) return;
+        
+        // Обработка ввода с проверкой на email
+        searchInput.addEventListener("input", () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const value = searchInput.value.trim();
+                // Проверяем, не является ли ввод email-ом
+                if (value.includes('@') && value.includes('.')) {
+                    // Это похоже на email, не выполняем поиск
+                    return;
                 }
+                renderSearchResults(value);
+            }, 300);
+        });
+        
+        // Очистка поиска
+        clearBtn.addEventListener("click", () => {
+            searchInput.value = "";
+            renderSearchResults("");
+        });
+        
+        // Обработка клавиши Escape
+        searchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                searchInput.value = "";
+                renderSearchResults("");
             }
-        }
-
-        const description = descriptionLines.join(" ");
-        return { ingredients, description };
+        });
     }
 
-    function escapeRegExp(str) {
-        return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    }
-
-    function buildDescriptionWithAmounts(fullText) {
-        const { ingredients, description } = extractRecipeParts(fullText);
-        let text = description || fullText || "";
-
-        for (const [name, amount] of Object.entries(ingredients)) {
-            if (!name || !amount) continue;
-            const escaped = escapeRegExp(name);
-            const regex = new RegExp(escaped, "gi");
-            text = text.replace(regex, (match) => `${match} (${amount})`);
-        }
-
-        return text;
-    }
-
-    // ===== Таймери: збереження, UI, звук =====
-    function loadTimersFromStorage() {
-        try {
-            const raw = localStorage.getItem("ask_timers");
-            if (!raw) return [];
-            const arr = JSON.parse(raw);
-            if (!Array.isArray(arr)) return [];
-            return arr.map(t => ({
-                id: t.id,
-                label: t.label || "таймер",
-                endTime: Number(t.endTime),
-                durationMs: Number(t.durationMs) || 0
-            })).filter(t => t.endTime && t.durationMs);
-        } catch (e) {
-            console.warn("Не вдалося прочитати таймери:", e);
-            return [];
-        }
-    }
-
-    function saveTimersToStorage() {
-        try {
-            localStorage.setItem("ask_timers", JSON.stringify(askTimers));
-        } catch (e) {
-            console.warn("Не вдалося зберегти таймери:", e);
-        }
-    }
-
-    function playTimerBeep() {
-        try {
-            const Ctx = window.AudioContext || window.webkitAudioContext;
-            if (!Ctx) return;
-            if (!audioCtx) audioCtx = new Ctx();
-
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-
-            osc.frequency.value = 900;
-            osc.type = "sine";
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.4);
-        } catch (e) {
-            console.warn("Не вдалося програти звук таймера:", e);
-        }
-    }
-
-    function onTimerEnd(timerId) {
-        const idx = askTimers.findIndex(t => t.id === timerId);
-        if (idx === -1) return;
-        const timer = askTimers[idx];
-
-        playTimerBeep();
-        sayWithAsk(`Час вийшов. ${timer.label} готовий.`);
-
-        askTimers.splice(idx, 1);
-        saveTimersToStorage();
-        renderTimersUI();
-    }
-
-    function scheduleTimerTimeout(timer) {
-        const now = Date.now();
-        const diff = timer.endTime - now;
-        if (diff <= 0) {
-            onTimerEnd(timer.id);
+    function renderSearchResults(query) {
+        const resultsPanel = document.getElementById("search-results");
+        const categoriesList = document.getElementById("categories");
+        
+        if (!resultsPanel) return;
+        
+        query = norm(query);
+        
+        // Если ввод похож на email, не показываем результаты
+        if (query.includes('@') && query.includes('.')) {
+            resultsPanel.style.display = "none";
+            categoriesList.style.display = "block";
             return;
         }
-        setTimeout(() => {
-            onTimerEnd(timer.id);
-        }, diff);
-    }
-
-    function formatTimeLeft(ms) {
-        if (ms < 0) ms = 0;
-        const totalSec = Math.floor(ms / 1000);
-        const m = Math.floor(totalSec / 60);
-        const s = totalSec % 60;
-        const mm = m.toString();
-        const ss = s.toString().padStart(2, "0");
-        return `${mm}:${ss}`;
-    }
-
-    function renderTimersUI() {
-        const panel = document.getElementById("ask-timers-panel");
-        if (!panel) return;
-
-        const now = Date.now();
-        if (!askTimers.length) {
-            panel.innerHTML = "";
+        
+        // Если запрос пустой, показываем категории
+        if (!query) {
+            resultsPanel.style.display = "none";
+            categoriesList.style.display = "block";
             return;
         }
-
+        
+        // Фильтруем результаты
+        const favoriteMode = query === "улюблене" || query === "улюблені" || query.includes("улюб") || query === "favorite" || query === "favourites";
+        
+        const matchedCats = [];
+        const matchedDishes = [];
+        
+        if (favoriteMode) {
+            // Ищем только избранные блюда
+            searchCache.flatDishes.forEach(dish => {
+                if (dish.favorite) matchedDishes.push(dish);
+            });
+        } else {
+            // Обычный поиск
+            searchCache.flatCats.forEach(cat => {
+                if (includesLoose(cat.name, query)) matchedCats.push(cat);
+            });
+            
+            searchCache.flatDishes.forEach(dish => {
+                if (includesLoose(dish.name, query) || includesLoose(dish.catName, query)) {
+                    matchedDishes.push(dish);
+                }
+            });
+        }
+        
+        // Сортируем результаты: сначала избранные блюда
+        matchedDishes.sort((a, b) => {
+            if (a.favorite !== b.favorite) return a.favorite ? -1 : 1;
+            return norm(a.name).localeCompare(norm(b.name));
+        });
+        
+        matchedCats.sort((a, b) => {
+            if (a.hasFavorites && !b.hasFavorites) return -1;
+            if (!a.hasFavorites && b.hasFavorites) return 1;
+            return norm(a.name).localeCompare(norm(b.name));
+        });
+        
+        const t = translations[currentLanguage];
+        
+        // Рендерим результаты
         let html = "";
-        askTimers.forEach(t => {
-            const remaining = t.endTime - now;
-            const clamped = Math.max(0, remaining);
-            const progress = t.durationMs > 0 ? clamped / t.durationMs : 0;
-            const timeStr = formatTimeLeft(remaining);
-            const eta = remaining <= 0 ? "зараз" : "ще трохи";
-
+        
+        if (favoriteMode) {
+            html += `<div style="margin:.5rem 0 1rem;color:var(--secondary);font-weight:900;font-size:1.1rem;"><i class="fas fa-star"></i> ${t.favoriteText}</div>`;
+        } else if (matchedCats.length > 0 || matchedDishes.length > 0) {
+            html += `<div style="margin:.5rem 0 1rem;color:var(--secondary);font-weight:900;font-size:1.1rem;">${t.searchResults || 'Результати пошуку'}</div>`;
+        }
+        
+        // Если результатов нет
+        if (matchedCats.length === 0 && matchedDishes.length === 0) {
             html += `
-              <div class="ask-timer">
-                <div class="ask-timer-circle" style="--progress:${progress}">
-                  ${timeStr}
+                <div class="empty">
+                    <i class="fas fa-search"></i>
+                    <p>${t.noResults || 'Нічого не знайдено. Спробуйте інший запит.'}</p>
                 </div>
-                <div class="ask-timer-text">
-                  <div class="ask-timer-label">${escapeHtml(t.label)}</div>
-                  <div class="ask-timer-eta">${eta}</div>
-                </div>
-              </div>
             `;
-        });
-
-        panel.innerHTML = html;
-    }
-
-    function startTimersUIUpdater() {
-        if (timersIntervalId) return;
-        timersIntervalId = setInterval(() => {
-            renderTimersUI();
-        }, 500);
-    }
-
-    function initTimers() {
-        askTimers = loadTimersFromStorage();
-
-        const now = Date.now();
-        const stillActive = [];
-        askTimers.forEach(t => {
-            if (t.endTime <= now) {
-                playTimerBeep();
-                sayWithAsk(`Час вийшов. ${t.label} готовий.`);
-            } else {
-                stillActive.push(t);
-                scheduleTimerTimeout(t);
-            }
-        });
-        askTimers = stillActive;
-        saveTimersToStorage();
-        renderTimersUI();
-        startTimersUIUpdater();
-    }
-
-    function createAskTimer(durationMs, label) {
-        const id = Date.now() + "_" + Math.random().toString(16).slice(2);
-        const endTime = Date.now() + durationMs;
-        const timer = { id, label, endTime, durationMs };
-
-        askTimers.push(timer);
-        saveTimersToStorage();
-        scheduleTimerTimeout(timer);
-        renderTimersUI();
-    }
-
-    function stopNearestTimer() {
-        if (!askTimers.length) {
-            sayWithAsk("Зараз жодного таймера немає.");
-            return;
         }
-        askTimers.sort((a, b) => a.endTime - b.endTime);
-        const t = askTimers.shift();
-        saveTimersToStorage();
-        renderTimersUI();
-        sayWithAsk(`Зупиняю таймер ${t.label}.`);
-    }
-
-    function stopAllTimers() {
-        if (!askTimers.length) {
-            sayWithAsk("Зараз жодного таймера немає.");
-            return;
-        }
-        askTimers = [];
-        saveTimersToStorage();
-        renderTimersUI();
-        sayWithAsk("Зупиняю всі таймери.");
-    }
-
-    // ===== Голос: базові речі =====
-    function initAsk() {
-        const hasRecognition = ("webkitSpeechRecognition" in window || "SpeechRecognition" in window);
-        if (!hasRecognition) {
-            console.warn("SpeechRecognition не підтримується цим браузером.");
-            return;
-        }
-
-        if ("speechSynthesis" in window) {
-            const pickVoice = () => {
-                const voices = window.speechSynthesis.getVoices();
-                askVoice =
-                    voices.find(v => v.lang && v.lang.toLowerCase().startsWith("uk") && v.name.toLowerCase().includes("female")) ||
-                    voices.find(v => v.lang && v.lang.toLowerCase().startsWith("uk")) ||
-                    null;
-            };
-            pickVoice();
-            window.speechSynthesis.onvoiceschanged = pickVoice;
-        }
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
-        recognition.lang = "uk-UA";
-        recognition.continuous = true;
-        recognition.interimResults = false;
-
-        recognition.onresult = function (event) {
-            const lastResult = event.results[event.results.length - 1];
-            const text = lastResult[0].transcript.trim().toLowerCase();
-            console.log("Ask heard:", text);
-            handleAskTranscript(text);
-        };
-
-        recognition.onend = function () {
-            try { recognition.start(); } catch (e) {}
-        };
-
-        recognition.onerror = function (event) {
-            console.error("Ask error:", event.error);
-        };
-
-        try { recognition.start(); } catch (e) {}
-    }
-
-    function resetAskInactivityTimer() {
-        if (!askAwake) return;
-
-        // Якщо голос увімкнено в режимі "завжди прокинутого" — не засинаємо
-        if (askAlwaysAwake) {
-            return;
-        }
-
-        clearTimeout(askInactivityTimer);
-        askInactivityTimer = setTimeout(() => {
-            askAwake = false;
-        }, 30000);
-    }
-
-    function sayWithAsk(text) {
-        if (!("speechSynthesis" in window)) return;
-        if (!askVoiceEnabled) {
-            console.log("ASK (mute):", text);
-            return;
-        }
-
-        console.log("ASK SAY:", text);
-
-        try { window.speechSynthesis.cancel(); } catch (e) {}
-
-        const utter = new SpeechSynthesisUtterance(text);
-        utter.lang = "uk-UA";
-
-        utter.rate = 0.9;   // повільніше
-        utter.pitch = 1.05; // трохи м'якше
-        utter.volume = 1.0;
-
-        if (askVoice) utter.voice = askVoice;
-
-        window.speechSynthesis.speak(utter);
-    }
-
-    function stopReading() {
-        if (!("speechSynthesis" in window)) return;
-        if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-            askManuallyStopped = true;
-            window.speechSynthesis.cancel();
-        }
-    }
-
-    function speakRecipeFromPosition(fullText, dishKey, startPos) {
-        if (!("speechSynthesis" in window)) return;
-        if (!fullText) return;
-
-        const text = fullText;
-        const pos = Math.max(0, Math.min(startPos || 0, text.length));
-
-        try { window.speechSynthesis.cancel(); } catch (e) {}
-        askCurrentDishKey = dishKey;
-        askManuallyStopped = false;
-
-        const utter = new SpeechSynthesisUtterance(text.slice(pos));
-        utter.lang = "uk-UA";
-        utter.rate = 0.9;
-        utter.pitch = 1.05;
-        utter.volume = 1.0;
-        if (askVoice) utter.voice = askVoice;
-
-        let lastChar = pos;
-
-        utter.onboundary = function (e) {
-            if (typeof e.charIndex === "number") {
-                lastChar = pos + e.charIndex;
-                saveReadingPosition(dishKey, lastChar);
-            }
-        };
-
-        utter.onend = function () {
-            askCurrentUtterance = null;
-            if (!askManuallyStopped) {
-                clearReadingPosition(dishKey);
-            }
-            askManuallyStopped = false;
-        };
-
-        askCurrentUtterance = utter;
-        window.speechSynthesis.speak(utter);
-    }
-
-    // Кнопка вкл/викл голосу Аска
-    function toggleAskVoice() {
-        const btn = document.getElementById("ask-voice-btn");
-        askVoiceEnabled = !askVoiceEnabled;
-        askAlwaysAwake = askVoiceEnabled;
-
-        if (askVoiceEnabled) {
-            btn.textContent = "Вимкнути голос Аска";
-            askAwake = true;
-            sayWithAsk("Голос Аска увімкнено. Я слухаю.");
-        } else {
-            btn.textContent = "Увімкнути голос Аска";
-            askAwake = false;
-            try { window.speechSynthesis.cancel(); } catch (e) {}
-        }
-    }
-
-    function handleAskTranscript(text) {
-        // Привітання — завжди будить і (якщо голос увімкнений) каже "Слухаю."
-        if (
-            text.includes("привіт аск") ||
-            text.includes("привіт аско") ||
-            text.includes("привет аск") ||
-            text.includes("привіт") ||
-            text.includes("привет")
-        ) {
-            askAwake = true;
-            sayWithAsk("Слухаю.");
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Якщо не прокинувся — ігноруємо все інше
-        if (!askAwake) return;
-
-        // Стоп читання рецепта
-        if (
-            text.includes("стоп читання") ||
-            text.includes("стоп рецепт") ||
-            (text.includes("стоп") && text.includes("опис"))
-        ) {
-            stopReading();
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Проста команда "стоп" — теж зупиняє читання
-        if (text === "стоп" || text.includes("зупинись") || text.includes("зупинися")) {
-            stopReading();
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Зупинити таймер(и)
-        if (
-            text.includes("зупини таймер") ||
-            text.includes("останови таймер") ||
-            text.includes("зупини таймера") ||
-            text.includes("останови таймера")
-        ) {
-            stopNearestTimer();
-            resetAskInactivityTimer();
-            return;
-        }
-
-        if (
-            text.includes("зупини всі таймери") ||
-            text.includes("зупини все таймери") ||
-            text.includes("останови всі таймери") ||
-            text.includes("останови все таймеры")
-        ) {
-            stopAllTimers();
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Закрити рецепт / назад
-        if (text.includes("закрий") || text.includes("назад")) {
-            const recipeVisible = document.getElementById("recipe-menu").style.display === "block";
-            if (recipeVisible) {
-                goBackFromRecipe();
-                sayWithAsk("Закриваю рецепт.");
-                resetAskInactivityTimer();
-                return;
-            }
-        }
-
-        // Таймер (створити)
-        if (text.includes("таймер")) {
-            const ok = setAskTimerFromText(text);
-            if (ok) {
-                resetAskInactivityTimer();
-                return;
-            }
-        }
-
-        // Скільки часу
-        if (text.includes("скільки часу") || text.includes("сколько времени")) {
-            tellAskTimeLeft();
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Рецепт (поточний)
-        if (text.includes("рецепт") && (text.includes("зачитай") || text.includes("прочитай"))) {
-            const fromStart = text.includes("заново") || text.includes("спочатку");
-            readCurrentRecipe(fromStart);
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Опис Х
-        if (text.includes("опис") && (text.includes("прочитай") || text.includes("зачитай"))) {
-            const fromStart = text.includes("заново") || text.includes("спочатку");
-            readRecipeDescriptionByVoice(text, fromStart);
-            resetAskInactivityTimer();
-            return;
-        }
-
-        // Відкрий страву
-        if (text.includes("відкрий") || text.includes("открой")) {
-            openDishByVoice(text);
-            resetAskInactivityTimer();
-            return;
-        }
-    }
-
-    function setAskTimerFromText(text) {
-        const match = text.match(/(\d+)\s*(секунд|секунди|секунду|секунды|хвилин|хвилини|хвилину|минут|минуту)/);
-        if (!match) {
-            sayWithAsk("Я не почула тривалість таймера.");
-            return false;
-        }
-
-        const value = parseInt(match[1], 10);
-        const unit = match[2];
-        let ms = 0;
-
-        if (unit.startsWith("сек")) {
-            ms = value * 1000;
-        } else {
-            ms = value * 60 * 1000;
-        }
-
-        let label = "таймер";
-        const idx = text.indexOf("для ");
-        if (idx !== -1) {
-            label = text.substring(idx + 4).trim();
-            if (!label) label = "таймер";
-        }
-
-        createAskTimer(ms, label);
-        sayWithAsk(`Ставлю таймер на ${value} ${unit}.`);
-        return true;
-    }
-
-    function tellAskTimeLeft() {
-        if (!askTimers.length) {
-            sayWithAsk("Жодного таймера зараз немає.");
-            return;
-        }
-        const now = Date.now();
-        askTimers.sort((a, b) => a.endTime - b.endTime);
-        const nearest = askTimers[0];
-        let diff = Math.max(0, nearest.endTime - now);
-
-        const minutes = Math.floor(diff / (60 * 1000));
-        const seconds = Math.floor((diff % (60 * 1000)) / 1000);
-
-        let phrase = "";
-        if (minutes > 0) {
-            phrase += `${minutes} хвилин `;
-        }
-        phrase += `${seconds} секунд`;
-
-        sayWithAsk(`До завершення найближчого таймера залишилось ${phrase}.`);
-    }
-
-    function readCurrentRecipe(fromStart) {
-        const el = document.getElementById("recipe-display");
-        if (!el || !currentCat || !currentDish) {
-            sayWithAsk("Немає відкритого рецепта.");
-            return;
-        }
-        const fullText = el.textContent.trim();
-        if (!fullText) {
-            sayWithAsk("Цей рецепт поки порожній.");
-            return;
-        }
-
-        const textForReading = buildDescriptionWithAmounts(fullText);
-        const dishKey = makeDishKey(currentCat, currentDish);
-        const pos = fromStart ? 0 : getReadingPosition(dishKey);
-        if (fromStart) clearReadingPosition(dishKey);
-
-        speakRecipeFromPosition(textForReading, dishKey, pos);
-    }
-
-    function openDishByVoice(text) {
-        if (!currentUser) {
-            sayWithAsk("Спочатку увійдіть у свій акаунт.");
-            return;
-        }
-
-        let namePart = "";
-        const idxUk = text.indexOf("відкрий");
-        const idxRu = text.indexOf("открой");
-        let idx = -1;
-
-        if (idxUk !== -1) idx = idxUk;
-        else if (idxRu !== -1) idx = idxRu;
-
-        if (idx !== -1) {
-            namePart = text.substring(idx + (idxUk !== -1 ? "відкрий".length : "открой".length)).trim();
-        } else {
-            namePart = text.trim();
-        }
-
-        if (!namePart) {
-            sayWithAsk("Я не почула назву страви.");
-            return;
-        }
-
-        const norm = namePart.toLowerCase();
-
-        db.ref(`users/${currentUser.uid}/categories`)
-            .once("value")
-            .then((snap) => {
-                const cats = snap.val() || {};
-                let found = false;
-                for (const [catId, cat] of Object.entries(cats)) {
-                    const dishes = cat.dishes || {};
-                    for (const [dishId, dish] of Object.entries(dishes)) {
-                        if (!dish.name) continue;
-                        const dn = dish.name.toLowerCase();
-                        if (dn.includes(norm) || norm.includes(dn)) {
-                            openDish(catId, dishId);
-                            sayWithAsk(`Відкриваю страву ${dish.name}.`);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found) break;
-                }
-                if (!found) {
-                    sayWithAsk("Я не знайшла таку страву у вашій кулінарній книзі.");
-                }
+        
+        // Категории
+        if (!favoriteMode && matchedCats.length > 0) {
+            html += `<div style="margin-bottom:.7rem;color:var(--text);font-weight:800;">${t.categories || 'Категорії'}</div>`;
+            matchedCats.forEach(cat => {
+                html += `
+                    <article class="result" data-type="category">
+                        <div class="result__top">
+                            <h3 class="result__title"><i class="fas fa-folder"></i> ${escapeHtml(cat.name)}</h3>
+                            <div class="result__type">${t.category || 'Категорія'}</div>
+                        </div>
+                        <p class="result__desc">${t.found || 'Знайдено'} ${cat.dishesCount} ${cat.dishesCount === 1 ? t.dishSingular || 'страва' : cat.dishesCount < 5 ? t.dishPlural || 'страви' : t.dishMany || 'страв'} ${t.inCategory || 'у категорії'}</p>
+                        <div class="result__actions">
+                            <button class="btn-outline" type="button" onclick="openSearchCategory('${cat.catId}')">
+                                <i class="fas fa-folder-open"></i>
+                                ${t.openCategory || 'Відкрити категорію'}
+                            </button>
+                        </div>
+                    </article>
+                `;
             });
-    }
-
-    function readRecipeDescriptionByVoice(text, fromStart) {
-        if (!currentUser) {
-            sayWithAsk("Спочатку увійдіть у свій акаунт.");
-            return;
         }
-
-        let namePart = "";
-        const idxOpis = text.indexOf("опис");
-        if (idxOpis !== -1) {
-            namePart = text.substring(idxOpis + "опис".length).trim();
-        } else {
-            namePart = text.trim();
-        }
-
-        if (!namePart) {
-            readCurrentRecipe(fromStart);
-            return;
-        }
-
-        const norm = namePart.toLowerCase();
-
-        db.ref(`users/${currentUser.uid}/categories`)
-            .once("value")
-            .then((snap) => {
-                const cats = snap.val() || {};
-                let dishName = null;
-                let fullText = null;
-                let foundCatId = null;
-                let foundDishId = null;
-
-                for (const [catId, cat] of Object.entries(cats)) {
-                    const dishes = cat.dishes || {};
-                    for (const [dishId, dish] of Object.entries(dishes)) {
-                        if (!dish.name) continue;
-                        const dn = dish.name.toLowerCase();
-                        if (dn.includes(norm) || norm.includes(dn)) {
-                            dishName = dish.name;
-                            fullText = dish.description || "";
-                            foundCatId = catId;
-                            foundDishId = dishId;
-                            break;
-                        }
-                    }
-                    if (dishName !== null) break;
-                }
-
-                if (dishName === null) {
-                    sayWithAsk("Я не знайшла таку страву у вашій кулінарній книзі.");
-                    return;
-                }
-
-                if (!fullText.trim()) {
-                    sayWithAsk(`Для страви ${dishName} поки немає опису.`);
-                    return;
-                }
-
-                openDish(foundCatId, foundDishId);
-
-                const textForReading = buildDescriptionWithAmounts(fullText);
-                const dishKey = makeDishKey(foundCatId, foundDishId);
-                const pos = fromStart ? 0 : getReadingPosition(dishKey);
-                if (fromStart) clearReadingPosition(dishKey);
-
-                speakRecipeFromPosition(textForReading, dishKey, pos);
+        
+        // Блюда
+        if (matchedDishes.length > 0) {
+            html += `<div style="margin:.7rem 0 .4rem;color:var(--text);font-weight:800;">${t.dishes || 'Страви'}</div>`;
+            matchedDishes.forEach(dish => {
+                const star = dish.favorite ? '<i class="fas fa-star"></i> ' : '';
+                const hasVideo = dish.videoUrl ? '• ' + t.hasVideo || 'Є відео' : '';
+                
+                html += `
+                    <article class="result" data-type="dish">
+                        <div class="result__top">
+                            <h3 class="result__title">${star}${escapeHtml(dish.name)}</h3>
+                            <div class="result__type">${t.dish || 'Страва'}</div>
+                        </div>
+                        <p class="result__desc"><i class="fas fa-folder"></i> ${t.category || 'Категорія'}: ${escapeHtml(dish.catName)} ${hasVideo}</p>
+                        <div class="result__actions">
+                            <button class="btn-outline" type="button" onclick="openSearchDish('${dish.catId}', '${dish.dishId}')">
+                                <i class="fas fa-book-open"></i>
+                                ${t.openRecipe || 'Відкрити рецепт'}
+                            </button>
+                        </div>
+                    </article>
+                `;
             });
+        }
+        
+        resultsPanel.innerHTML = html;
+        resultsPanel.style.display = "block";
+        categoriesList.style.display = "none";
     }
 
-    // ==================== Ініціалізація ====================
+    function openSearchCategory(catId) {
+        const searchInput = document.getElementById("global-search");
+        searchInput.value = "";
+        
+        showScreen("screen-main");
+        document.getElementById("search-results").style.display = "none";
+        document.getElementById("categories").style.display = "block";
+        
+        // Раскрываем категорию
+        toggleDishes(catId);
+        
+        // Прокручиваем до категории
+        const catEl = document.querySelector(`[data-cat-id="${catId}"]`);
+        if (catEl) {
+            catEl.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }
+
+    function openSearchDish(catId, dishId) {
+        const searchInput = document.getElementById("global-search");
+        searchInput.value = "";
+        
+        openDish(catId, dishId);
+    }
+
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
     document.addEventListener("DOMContentLoaded", () => {
-        showMainMenu();
-        initAsk();
-        initTimers();
+        // Загружаем настройки
+        loadSettings();
+        
+        // Привязываем события
+        document.getElementById("authButton").addEventListener("click", toggleAuthMenu);
+        document.getElementById("addCategoryBtn").addEventListener("click", showAddMenu);
+        document.getElementById("backFromAddBtn").addEventListener("click", () => showScreen("screen-main"));
+        document.getElementById("addCategoryConfirmBtn").addEventListener("click", addNewCategory);
+        document.getElementById("backFromRecipeBtn").addEventListener("click", goBackFromRecipe);
+        document.getElementById("editRecipeBtn").addEventListener("click", startEdit);
+        document.getElementById("saveRecipeBtn").addEventListener("click", saveRecipe);
+        document.getElementById("cancelEditBtn").addEventListener("click", cancelEdit);
+        document.getElementById("addVideoBtn").addEventListener("click", addVideo);
+        document.getElementById("addSocialLinkBtn").addEventListener("click", addSocialLink);
+        
+        // Инициализация настроек
+        initSettings();
+        
+        // Инициализация поиска
+        initSearch();
+        
+        // Показываем главный экран
+        showScreen("screen-main");
     });
-</script>
+    </script>
 </body>
 </html>
